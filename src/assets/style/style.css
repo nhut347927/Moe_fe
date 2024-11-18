@@ -1,0 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jua&display=swap");
+
+body {
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  min-height: 100vh;
+  background: #000000;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Jua", sans-serif;
+}
+
+
+
+
+
+
+
+.custom-scrollbar {
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #393939;
+  border-radius: 10px;
+}
+/*
+
+*/
+.scroll-but-hidden {
+  overflow: auto; /* Cho phép cuộn nếu cần */
+  scrollbar-width: none; /* Ẩn thanh cuộn trên Firefox */
+}
+
+.scroll-but-hidden::-webkit-scrollbar {
+  display: none; /* Ẩn thanh cuộn trên WebKit (Chrome, Safari, etc.) */
+}
+
+@media screen and (max-width: 1100px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  body {
+    font-size: 14px;
+  }
+}
