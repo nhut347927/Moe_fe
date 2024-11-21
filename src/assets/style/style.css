@@ -1,6 +1,7 @@
+/* INTER */
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+/* JUA */
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jua&display=swap");
-
 body {
   font-family: "Inter", sans-serif;
   margin: 0;
@@ -9,20 +10,20 @@ body {
   min-height: 100vh;
 }
 
-h1,
-h2,
-h3 {
+.moe-font-jua {
   font-family: "Jua", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 */
 .scroll-but-hidden {
-  overflow: auto; /* Cho phép cuộn nếu cần */
-  scrollbar-width: none; /* Ẩn thanh cuộn trên Firefox */
+  overflow: auto; 
+  scrollbar-width: none;
 }
 
 .scroll-but-hidden::-webkit-scrollbar {
-  display: none; /* Ẩn thanh cuộn trên WebKit (Chrome, Safari, etc.) */
+  display: none;
 }
 
 @media screen and (max-width: 1100px) {

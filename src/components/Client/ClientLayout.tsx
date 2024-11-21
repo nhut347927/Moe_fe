@@ -1,7 +1,7 @@
 import React, { ReactNode, useState } from "react";
 import { Maximize, Minimize } from "lucide-react"; 
 import Header from "../Common/Client/Header";
-import Slider from "../Common/Client/Slider";
+import SliderBar from "../Common/Client/SliderBar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ClientLayout = ({ children }: { children: ReactNode }) => {
@@ -33,7 +33,7 @@ const ClientLayout = ({ children }: { children: ReactNode }) => {
      
       <button
         type="button"
-        className="absolute bottom-4 right-4 p-3 bg-gray-800 text-white rounded-full hover:bg-gray-700 focus:outline-none shadow-lg"
+        className="absolute bottom-2 right-2 p-2 z-50"
         onClick={toggleFullscreen}
         aria-label="Toggle Fullscreen"
       >
@@ -46,7 +46,7 @@ const ClientLayout = ({ children }: { children: ReactNode }) => {
 
   
       <div className="flex w-full h-full overflow-hidden">
-        <Slider />
+        <SliderBar />
 
         <main className="flex-1 flex flex-col">
           <Header />

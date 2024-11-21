@@ -40,7 +40,7 @@ const Home = () => {
     <div className="d-flex justify-content-center" id="img-container">
       <div>
         {reelsData.map((post, index) => (
-          <PostMultiImg key={post.id} post={post} />
+          <PostMultiImg  />
         ))}
       </div>
     </div>

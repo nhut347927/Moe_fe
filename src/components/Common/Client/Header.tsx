@@ -1,5 +1,5 @@
-import { Bell, PlusCircle } from 'lucide-react'
-import { Button } from "@/components/ui/button"
+import { Bell, PlusCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,9 +7,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import girl from "../../../assets/images/girl.png";
-import { ModeToggle } from '@/components/ModeToggle';
+import { ModeToggle } from "@/components/ModeToggle";
 export default function Header() {
   return (
     <header className="fixed right-0 top-0 p-3 z-50">
@@ -17,7 +17,7 @@ export default function Header() {
         {/* Notification Button */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative p-1">
+            <Button variant="outline" size="icon" className="relative p-1 rounded-full">
               <Bell className="h-4 w-4" />
               <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500" />
               <span className="sr-only">Notifications</span>
@@ -35,7 +35,7 @@ export default function Header() {
         {/* Create New Button */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="p-1">
+            <Button variant="outline" size="icon" className="p-1 rounded-full">
               <PlusCircle className="h-4 w-4" />
               <span className="sr-only">Create new</span>
             </Button>
@@ -52,7 +52,11 @@ export default function Header() {
         {/* User Avatar */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-       <img className="w-10 h-10 rounded-lg shadow-md z-10" src={girl} alt="Logo-Img" />
+            <img
+              className="w-10 h-10 rounded-full shadow-md z-10"
+              src={girl}
+              alt="Logo-Img"
+            />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -62,8 +66,7 @@ export default function Header() {
             <DropdownMenuItem>Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-
       </div>
     </header>
-  )
+  );
 }
