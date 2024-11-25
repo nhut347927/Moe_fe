@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import girl from "../../../assets/images/girl.png";
 import { ModeToggle } from "@/components/ModeToggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 export default function Header() {
   return (
     <header className="fixed right-0 top-0 p-3 z-50">
@@ -17,7 +19,11 @@ export default function Header() {
         {/* Notification Button */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" className="relative p-1 rounded-full">
+            <Button
+              variant="outline"
+              size="icon"
+              className="relative p-1 rounded-full"
+            >
               <Bell className="h-4 w-4" />
               <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500" />
               <span className="sr-only">Notifications</span>
@@ -48,15 +54,14 @@ export default function Header() {
             <DropdownMenuItem>New live stream</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <ModeToggle/>
+        <ModeToggle />
         {/* User Avatar */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <img
-              className="w-10 h-10 rounded-full shadow-md z-10"
-              src={girl}
-              alt="Logo-Img"
-            />
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={girl} className="object-cover z-10" />
+              <AvatarFallback>U</AvatarFallback>
+            </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>

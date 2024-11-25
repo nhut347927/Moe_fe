@@ -25,6 +25,36 @@ body {
 .scroll-but-hidden::-webkit-scrollbar {
   display: none;
 }
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 10s linear infinite;
+}
+
+
+.moe-style {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: brightness(0.9) contrast(1.2) saturate(1.5) hue-rotate(-10deg);
+  background: linear-gradient(
+    rgba(245, 133, 41, 0.2),
+    rgba(221, 42, 123, 0.2),
+    rgba(129, 52, 175, 0.2)
+  );
+  background-blend-mode: overlay;
+}
+
+
 
 @media screen and (max-width: 1100px) {
   body {

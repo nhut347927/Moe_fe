@@ -12,8 +12,8 @@ const root = ReactDOM.createRoot(document.getElementById('root')!);
 
 root.render(
   <StrictMode>
-    <Provider store={store}> {/* Kết nối Redux store với toàn bộ ứng dụng */}
-      <FilterProvider> {/* Cung cấp ngữ cảnh FilterContext cho ứng dụng */}
+    <Provider store={store}>
+      <FilterProvider> 
         <App />
       </FilterProvider>
     </Provider>

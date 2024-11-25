@@ -26,9 +26,8 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <Router>
-        <Suspense fallback={<LoadingSpinner />}>
-          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <Suspense fallback={<LoadingSpinner />}>
             <Routes>
               <Route
                 path="/admin/*"
@@ -44,8 +43,8 @@ const App: React.FC = () => {
               <Route path="/" element={<Navigate to="/client/home" />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </ThemeProvider>
-        </Suspense>
+          </Suspense>
+        </ThemeProvider>
       </Router>
     </ErrorBoundary>
   );

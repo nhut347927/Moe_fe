@@ -147,15 +147,15 @@ const SliderBar: React.FC = () => {
     );
   };
   return (
-    <nav
-      className={`h-screen flex flex-col bg-white text-white border-e-2 dark:bg-zinc-950 dark:text-white transition-all duration-300 ease-in-out  ${
-        isCollapsed ? "w-20" : "w-80"
-      } ${
-        uri == "/client/yourspace"
-          ? "bg-[rgba(255,255,255,0.3)] dark:bg-[rgba(0,0,0,0.3)]"
-          : ""
-      }`}
-    >
+<nav
+  className={`h-screen flex flex-col border-e-2 transition-all duration-300 ease-in-out ${
+    isCollapsed ? "w-20" : "w-80"
+  } ${
+    uri === "/client/yourspace"
+      ? "bg-[rgba(255,255,255,0.3)] dark:bg-[rgba(0,0,0,0.3)]"
+      : "bg-white dark:bg-zinc-950"
+  } text-white dark:text-white`}
+>
       {/* Header */}
       <div className="flex items-center mt-3">
         {!isCollapsed && (
@@ -269,7 +269,7 @@ const SliderBar: React.FC = () => {
                   className="h-12 w-12 rounded-md z-0"
                 />
                 <div className="ms-4 z-20">
-                  <span className="block font-bold text-zinc-800 dark:text-zinc-100 truncate text-ellipsis max-w-[220px]">
+                  <span className="block font-medium text-zinc-800 dark:text-zinc-100 truncate text-ellipsis max-w-[220px]">
                     {item.title}
                   </span>
                   <span className="block text-sm text-zinc-600 dark:text-zinc-300 truncate text-ellipsis max-w-[220px] hover:underline">
