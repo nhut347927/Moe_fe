@@ -1,13 +1,22 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX, Repeat } from "lucide-react";
-import vid from "../../assets/video/vid-5.mp4";
 
-const PlaylistAndArtists: React.FC = () => {
+interface PostVideoProps {
+  videoSrc: string;
+  initialMuted?: boolean;
+  initialPlaying?: boolean;
+}
+
+const PostVideo: React.FC<PostVideoProps> = ({
+  videoSrc,
+  initialMuted = true,
+  initialPlaying = false,
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true); // Default: Playing
+  const [isPlaying, setIsPlaying] = useState(initialPlaying);
   const [progress, setProgress] = useState(0);
-  const [isMuted, setIsMuted] = useState(true); // Default: Muted
+  const [isMuted, setIsMuted] = useState(initialMuted);
   const [isLooping, setIsLooping] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -15,9 +24,14 @@ const PlaylistAndArtists: React.FC = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Set default states for autoplay and muted
-    video.autoplay = true;
-    video.muted = true;
+    video.muted = initialMuted;
+    if (initialPlaying) {
+      video
+        .play()
+        .catch((error) => console.error("Error attempting to play:", error));
+    } else {
+      video.pause();
+    }
 
     const updateProgress = () => {
       if (video.duration) {
@@ -37,7 +51,7 @@ const PlaylistAndArtists: React.FC = () => {
       video.removeEventListener("play", handlePlay);
       video.removeEventListener("pause", handlePause);
     };
-  }, []);
+  }, [initialMuted, initialPlaying]);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -104,18 +118,21 @@ const PlaylistAndArtists: React.FC = () => {
       document.removeEventListener("mousemove", handleMouseMove as any);
     };
   }, [isDragging]);
-
+ 
+  useEffect(() => {
+    setIsMuted(initialMuted);
+  }, [initialMuted]);
   return (
     <div className="flex justify-center">
       <div className="relative h-screen flex items-center">
         <video
           ref={videoRef}
-          src={vid}
-          className="h-auto max-h-screen object-cover shadow-2xl shadow-zinc-900 cursor-pointer"
+          src={videoSrc}
+          className="h-auto max-h-screen object-cover shadow-2xl p-0 m-0 shadow-zinc-900 cursor-pointer"
+          autoPlay={isPlaying}
+          muted={isMuted}
           loop={isLooping}
           playsInline
-          muted // Ensure it starts muted
-          autoPlay // Ensure it starts automatically
           onClick={togglePlay}
         />
         <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none">
@@ -160,4 +177,4 @@ const PlaylistAndArtists: React.FC = () => {
   );
 };
 
-export default PlaylistAndArtists;
+export default PostVideo;

@@ -146,16 +146,22 @@ const SliderBar: React.FC = () => {
       prev.includes(id) ? prev.filter((pId) => pId !== id) : [...prev, id]
     );
   };
+
+  useEffect(() => {
+    if (uri === "/client/home") {
+      setIsCollapsed(true);
+    }
+  }, [uri]);
   return (
-<nav
-  className={`h-screen flex flex-col border-e-2 transition-all duration-300 ease-in-out ${
-    isCollapsed ? "w-20" : "w-80"
-  } ${
-    uri === "/client/yourspace"
-      ? "bg-[rgba(255,255,255,0.3)] dark:bg-[rgba(0,0,0,0.3)]"
-      : "bg-white dark:bg-zinc-950"
-  } text-white dark:text-white`}
->
+    <nav
+      className={`h-screen flex flex-col border-e-2 transition-all duration-300 ease-in-out ${
+        isCollapsed ? "w-20" : "w-80"
+      } ${
+        uri === "/client/yourspace"
+          ? "bg-[rgba(255,255,255,0.3)] dark:bg-[rgba(0,0,0,0.3)]"
+          : "bg-white dark:bg-zinc-950"
+      } text-white dark:text-white`}
+    >
       {/* Header */}
       <div className="flex items-center mt-3">
         {!isCollapsed && (
@@ -177,7 +183,7 @@ const SliderBar: React.FC = () => {
         </div>
       </div>
       {/* Navigation Links */}
-      <div className="flex flex-col space-y-1 px-2 mt-3">
+      <div className="flex flex-col space-y-2 px-2 mt-3">
         {links.map((link, index) => (
           <Link
             key={index}
@@ -228,8 +234,8 @@ const SliderBar: React.FC = () => {
                 </PopoverTrigger>
                 <PopoverContent className="p-2 w-36">
                   <ul className="flex flex-col space-y-1">
-                    {sortOptions.map((option) => (
-                      <li key={option.value}>
+                    {sortOptions.map((option, index) => (
+                      <li key={index}>
                         <button
                           id={option.id}
                           className={cn(
@@ -258,11 +264,11 @@ const SliderBar: React.FC = () => {
 
         <div className="overflow-y-auto overflow-x-hidden scroll-but-hidden px-2">
           {items.map((item, index) => (
-            <div className="group relative rounded-md overflow-hidden cursor-pointer">
-              <div
-                key={index}
-                className="flex items-center p-2 rounded-lg relative"
-              >
+            <div
+              key={index}
+              className="group relative rounded-md overflow-hidden cursor-pointer"
+            >
+              <div className="flex items-center p-2 rounded-lg relative">
                 <img
                   src={item.imgSrc}
                   alt="Playlist"
@@ -317,9 +323,9 @@ const SliderBar: React.FC = () => {
                         />
                       </div>
                       <ScrollArea className="h-[200px] p-2">
-                        {filteredPlaylists.map((playlist) => (
+                        {filteredPlaylists.map((playlist, index) => (
                           <div
-                            key={playlist.id}
+                            key={index}
                             className={cn(
                               "flex items-center space-x-2 rounded-md p-2 transition-colors hover:bg-muted",
                               selectedPlaylists.includes(playlist.id) &&
@@ -347,7 +353,9 @@ const SliderBar: React.FC = () => {
                         ))}
                       </ScrollArea>
                       <div className="flex justify-end space-x-2 p-4 border-t border-zinc-200 dark:border-zinc-800">
-                        <Button className="rounded-full" variant="outline">Cancel</Button>
+                        <Button className="rounded-full" variant="outline">
+                          Cancel
+                        </Button>
                         <Button className="rounded-full">Done</Button>
                       </div>
                     </PopoverContent>

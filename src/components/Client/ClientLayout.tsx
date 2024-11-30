@@ -2,7 +2,6 @@ import React, { ReactNode, useState } from "react";
 import { Maximize, Minimize } from "lucide-react";
 import Header from "../Common/Client/Header";
 import SliderBar from "../Common/Client/SliderBar";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ClientLayout = ({ children }: { children: ReactNode }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -45,7 +44,7 @@ const ClientLayout = ({ children }: { children: ReactNode }) => {
 
         <main className="flex-1 flex flex-col">
           <Header />
-          <ScrollArea className="flex-1">{children}</ScrollArea>
+   {children}
         </main>
       </div>
     </div>
