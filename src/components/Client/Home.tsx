@@ -281,20 +281,17 @@ const postData: Post[] = [
   },
 ];
 
-
 const Home = () => {
   const videoRefs = useRef<(HTMLDivElement | null)[]>([]);
   const currentIndex = useRef<number>(0);
   const lastScrollTime = useRef<number>(0);
-  const [isPlaying, setIsPlaying] = useState<boolean>(true); // Video mặc định sẽ phát
-  const [isMuted, setIsMuted] = useState<boolean>(true); // Mặc định tắt tiếng
+  const [audioStates, setAudioStates] = useState<Record<number, { isPlaying: boolean; isMuted: boolean }>>({}); // Track audio state for each post
   const [currentPost, setCurrentPost] = useState<Post>(postData[0]); // Lưu bài đăng hiện tại
 
   useEffect(() => {
     const handleScroll = (event: WheelEvent) => {
       const videoContainer = document.getElementById("video-container");
-      if (!videoContainer || !videoContainer.contains(event.target as Node))
-        return;
+      if (!videoContainer || !videoContainer.contains(event.target as Node)) return;
 
       event.preventDefault();
       const now = Date.now();
@@ -310,16 +307,21 @@ const Home = () => {
       if (target) {
         target.scrollIntoView({ behavior: "smooth", block: "center" });
         const newPost = postData[currentIndex.current];
-        setCurrentPost(newPost); // Cập nhật bài đăng hiện tại
-        setIsPlaying(newPost.typePost === "VIDEO"); // Chỉ phát nếu bài đăng là video
-        setIsMuted(false); // Bật âm thanh
+        setCurrentPost(newPost);
 
-        // Hiệu ứng mờ khi chuyển bài
-        target.style.opacity = "0";
-        target.style.transition = "opacity 0.5s ease-in-out";
-        setTimeout(() => {
-          target.style.opacity = "1";
-        }, 100);
+        // Update audio state for the active post
+        setAudioStates((prevStates) => {
+          const updatedStates = { ...prevStates };
+          // Stop audio for all other posts
+          Object.keys(updatedStates).forEach((key) => {
+            if (parseInt(key) !== currentIndex.current) {
+              updatedStates[parseInt(key)] = { isPlaying: false, isMuted: true }; // Stop other audios
+            }
+          });
+          // Set the current post's audio state
+          updatedStates[currentIndex.current] = { isPlaying: true, isMuted: false };
+          return updatedStates;
+        });
       }
 
       lastScrollTime.current = now;
@@ -339,22 +341,22 @@ const Home = () => {
       >
         {postData.map((post, index) => (
           <div
-            className="px-10"
+            className="max-w-[80%] mx-auto"
             ref={(el) => (videoRefs.current[index] = el)}
             key={index}
           >
             {post.typePost === "VIDEO" ? (
               <PostVideo
                 videoSrc={post.video!}
-                initialMuted={isMuted}
-                initialPlaying={isPlaying && currentIndex.current === index}
+                initialMuted={audioStates[index]?.isMuted ?? true}
+                initialPlaying={audioStates[index]?.isPlaying ?? false}
               />
             ) : (
               <PostMultiImg
                 images={post.img!}
                 audioSrc={post.audio}
-                initialMuted={isMuted}
-                initialPlaying={isPlaying && currentIndex.current === index}
+                initialMuted={audioStates[index]?.isMuted ?? true}
+                initialPlaying={audioStates[index]?.isPlaying ?? false}
               />
             )}
           </div>

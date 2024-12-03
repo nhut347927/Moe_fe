@@ -42,9 +42,6 @@ body {
 
 
 .moe-style {
-  display: block;
-  width: 100%;
-  height: auto;
   filter: brightness(0.9) contrast(1.2) saturate(1.5) hue-rotate(-10deg);
   background: linear-gradient(
     rgba(245, 133, 41, 0.2),
