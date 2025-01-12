@@ -177,7 +177,7 @@ const PostComponent: React.FC<PostProps> = ({ postData }) => {
         {/* Comment Input Form */}
         <div className="absolute inset-x-0 bottom-0 bg-white dark:bg-black pt-3 rounded-b-2xl">
           <form className="flex items-center space-x-2 p-5 pt-0">
-            <Input className="flex-grow" placeholder="Thêm bình luận..." />
+            <Input className="flex-grow rounded-full" placeholder="Thêm bình luận..." />
             <Send className="h-5 w-5 hover:text-zinc-500" />
           </form>
         </div>

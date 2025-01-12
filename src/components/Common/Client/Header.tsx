@@ -11,6 +11,7 @@ import {
 import girl from "../../../assets/images/girl.png";
 import { ModeToggle } from "@/components/ModeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
@@ -66,8 +67,10 @@ export default function Header() {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
+            <Link to="/">  <DropdownMenuItem>Profile</DropdownMenuItem></Link>
+            <Link to="/auth/login"> <DropdownMenuItem>Login</DropdownMenuItem></Link>
+            <Link to="/auth/register">   <DropdownMenuItem>Register</DropdownMenuItem></Link>
+            <Link to="/auth/change-password">   <DropdownMenuItem>Change Password</DropdownMenuItem></Link>
             <DropdownMenuItem>Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

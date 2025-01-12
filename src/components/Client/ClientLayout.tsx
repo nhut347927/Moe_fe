@@ -1,7 +1,8 @@
-import React, { ReactNode, useState } from "react";
+import { ReactNode, useState } from "react";
 import { Maximize, Minimize } from "lucide-react";
 import Header from "../Common/Client/Header";
 import SliderBar from "../Common/Client/SliderBar";
+import { Toaster } from "@/components/ui/toaster";
 
 const ClientLayout = ({ children }: { children: ReactNode }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -38,13 +39,13 @@ const ClientLayout = ({ children }: { children: ReactNode }) => {
           <Maximize className="w-6 h-6" />
         )}
       </button>
-
+      <Toaster />
       <div className="flex w-full h-full overflow-hidden">
         <SliderBar />
 
         <main className="flex-1 flex flex-col">
           <Header />
-   {children}
+          {children}
         </main>
       </div>
     </div>
