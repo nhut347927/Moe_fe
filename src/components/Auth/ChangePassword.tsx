@@ -42,10 +42,20 @@ export default function ChangePassword() {
   async function onSubmit(values: any) {
     try {
 
-      const response = await axiosInstance.put("/auth/change-password", {
-        newPassword: values.newPassword,
-        confirmNewPassword: values.confirmNewPassword,
-      });
+      const response = await getAxiosInstance().put(
+        "/auth/change-password",
+        {
+          newPassword: values.newPassword,
+          confirmNewPassword: values.confirmNewPassword,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',  // Đảm bảo gửi dữ liệu dưới dạng JSON
+          },
+          withCredentials: true  // Đảm bảo gửi cookie cùng với yêu cầu
+        }
+      );
+      
 
       toast({
         variant: "default",

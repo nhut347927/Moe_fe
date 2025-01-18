@@ -11,10 +11,6 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
-    https: {
-      key: fs.readFileSync(path.resolve(__dirname, "./private-key.key")),  // Đường dẫn tới private key
-      cert: fs.readFileSync(path.resolve(__dirname, "./certificate.crt")),  // Đường dẫn tới chứng chỉ
-    },
+    port: 3000
   },
 });
