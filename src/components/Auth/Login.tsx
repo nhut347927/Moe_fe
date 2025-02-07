@@ -21,11 +21,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from "@react-oauth/google";
+
+const clientId = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID;
 
 export default function Login() {
   const { toast } = useToast();
   const axiosInstance = getAxiosInstance();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessages, setErrorMessages] = useState<any>({});
 
@@ -38,9 +41,9 @@ export default function Login() {
     },
   });
 
+  // Xử lý đăng nhập bằng email & password
   async function onSubmit(values: any) {
     try {
-    
       const response = await axiosInstance.post("/auth/login", {
         email: values.email,
         password: values.password,
@@ -51,7 +54,7 @@ export default function Login() {
         description: <p className="text-lime-500">{response.data.message}</p>,
       });
 
-      navigate("/client/home", { replace: true }); 
+      navigate("/client/home", { replace: true });
     } catch (error: any) {
       if (error.response && error.response.data) {
         toast({
@@ -67,6 +70,37 @@ export default function Login() {
     }
   }
 
+  // Xử lý đăng nhập bằng Google
+  const loginGoogleButton = async (response: CredentialResponse) => {
+    if (!response.credential) return;
+
+    try {
+      const res = await axiosInstance.post("/auth/google-login", {
+        token: response.credential,
+      });
+
+      toast({
+        variant: "default",
+        description: <p className="text-lime-500">{res.data.message}</p>,
+      });
+
+      navigate("/client/home", { replace: true });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        description: error.response?.data?.message || "Google login failed!",
+      });
+    }
+  };
+
+  // Xử lý thất bại khi đăng nhập Google
+  const handleLoginFailure = () => {
+    toast({
+      variant: "destructive",
+      description: "Google login failed! Please try again.",
+    });
+  };
+
   return (
     <div className="flex flex-col min-h-[50vh] h-full w-full items-center justify-center px-4">
       <Card className="mx-auto max-w-sm">
@@ -80,6 +114,7 @@ export default function Login() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="grid gap-4">
+                {/* Email Input */}
                 <FormField
                   control={form.control}
                   name="email"
@@ -101,6 +136,8 @@ export default function Login() {
                     </FormItem>
                   )}
                 />
+
+                {/* Password Input */}
                 <FormField
                   control={form.control}
                   name="password"
@@ -142,17 +179,24 @@ export default function Login() {
                     </FormItem>
                   )}
                 />
+
+                {/* Nút đăng nhập */}
                 <Button type="submit" className="w-full">
                   Login
                 </Button>
-                <Button variant="outline" className="w-full">
-                  Login with Google
-                </Button>
+
+                {/* Nút đăng nhập Google */}
+                <GoogleOAuthProvider clientId={clientId}>
+                  <GoogleLogin
+                    onSuccess={loginGoogleButton}
+                    onError={handleLoginFailure}
+                  />
+                </GoogleOAuthProvider>
               </div>
             </form>
           </Form>
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?
+            Don&apos;t have an account?{" "}
             <Link to="/auth/register" className="underline">
               Sign up
             </Link>
