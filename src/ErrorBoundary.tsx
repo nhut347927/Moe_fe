@@ -1,4 +1,6 @@
-import React, { ReactNode, ErrorInfo } from 'react';
+import React, { ReactNode, ErrorInfo } from "react";
+import { CircleX } from "lucide-react";
+import "./assets/style/ErrorBoundary.css";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -8,25 +10,34 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+class ErrorBoundary extends React.Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
   }
 
   static getDerivedStateFromError(_: Error): ErrorBoundaryState {
-    // Cập nhật state để hiển thị giao diện fallback
     return { hasError: true };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Ghi log lỗi hoặc gửi lỗi tới một dịch vụ logging
-    console.error('Error:', error, errorInfo);
+    console.error("Error:", error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
-      return <h1>Something went wrong.</h1>;
+      return (
+        <div className="error-boundary">
+          <CircleX className="error-icon" />
+          <h1 className="error-message">Something went wrong.</h1>
+          <p className="error-subtext">
+            Please try again later or contact support.
+          </p>
+        </div>
+      );
     }
 
     return this.props.children;

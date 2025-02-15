@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX, Repeat } from "lucide-react";
-import vid from "../../assets/video/vid-5.mp4";
+import vid from "../../assets/video/vid5.mp4";
 
 const PlaylistAndArtists: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);

@@ -1,4 +1,4 @@
-import { Bell, PlusCircle } from "lucide-react";
+import { Bell, SquarePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -43,7 +43,7 @@ export default function Header() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon" className="p-1 rounded-full">
-              <PlusCircle className="h-4 w-4" />
+              <SquarePlus className="h-4 w-4" />
               <span className="sr-only">Create new</span>
             </Button>
           </DropdownMenuTrigger>

@@ -6,16 +6,16 @@ import img4 from "../../assets/images/girl.png";
 import img5 from "../../assets/images/hoavang.jpg";
 import img6 from "../../assets/images/hoaxanh.jpg";
 import img7 from "../../assets/images/tải xuống.jpg";
-import PostMultiImg from "./home/PostMultiImage"; // Đảm bảo đường dẫn này đúng
+import PostMultiImg from "./home/PostImage"; // Đảm bảo đường dẫn này đúng
 import UserPostInfo from "./home/UserPostInfo";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import PostVideo from "./home/PostVideo";
-import vid1 from "../../assets/video/vid-1.mp4";
-import vid2 from "../../assets/video/vid-2.mp4";
-import vid3 from "../../assets/video/vid-3.mp4";
-import vid4 from "../../assets/video/vid-4.mp4";
-import vid5 from "../../assets/video/vid-5.mp4";
-import vid6 from "../../assets/video/vid-6.mp4";
+import vid1 from "../../assets/video/vid1.mp4";
+import vid2 from "../../assets/video/vid2.mp4";
+import vid3 from "../../assets/video/vid3.mp4";
+import vid4 from "../../assets/video/vid4.mp4";
+import vid5 from "../../assets/video/vid5.mp4";
+import vid6 from "../../assets/video/vid6.mp4";
 import audio from "../../assets/audio/idt41104.mp3";
 
 type Comment = {
@@ -285,13 +285,16 @@ const Home = () => {
   const videoRefs = useRef<(HTMLDivElement | null)[]>([]);
   const currentIndex = useRef<number>(0);
   const lastScrollTime = useRef<number>(0);
-  const [audioStates, setAudioStates] = useState<Record<number, { isPlaying: boolean; isMuted: boolean }>>({}); // Track audio state for each post
+  const [audioStates, setAudioStates] = useState<
+    Record<number, { isPlaying: boolean; isMuted: boolean }>
+  >({}); // Track audio state for each post
   const [currentPost, setCurrentPost] = useState<Post>(postData[0]); // Lưu bài đăng hiện tại
 
   useEffect(() => {
     const handleScroll = (event: WheelEvent) => {
       const videoContainer = document.getElementById("video-container");
-      if (!videoContainer || !videoContainer.contains(event.target as Node)) return;
+      if (!videoContainer || !videoContainer.contains(event.target as Node))
+        return;
 
       event.preventDefault();
       const now = Date.now();
@@ -315,11 +318,17 @@ const Home = () => {
           // Stop audio for all other posts
           Object.keys(updatedStates).forEach((key) => {
             if (parseInt(key) !== currentIndex.current) {
-              updatedStates[parseInt(key)] = { isPlaying: false, isMuted: true }; // Stop other audios
+              updatedStates[parseInt(key)] = {
+                isPlaying: false,
+                isMuted: true,
+              }; // Stop other audios
             }
           });
           // Set the current post's audio state
-          updatedStates[currentIndex.current] = { isPlaying: true, isMuted: false };
+          updatedStates[currentIndex.current] = {
+            isPlaying: true,
+            isMuted: false,
+          };
           return updatedStates;
         });
       }
@@ -334,36 +343,38 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex">
+    <div>
       <div
         id="video-container"
         className="w-full max-h-screen overflow-y-auto overflow-x-hidden scroll-but-hidden"
       >
         {postData.map((post, index) => (
-          <div
-            className="max-w-[80%] mx-auto"
-            ref={(el) => (videoRefs.current[index] = el)}
-            key={index}
-          >
-            {post.typePost === "VIDEO" ? (
-              <PostVideo
-                videoSrc={post.video!}
-                initialMuted={audioStates[index]?.isMuted ?? true}
-                initialPlaying={audioStates[index]?.isPlaying ?? false}
-              />
-            ) : (
-              <PostMultiImg
-                images={post.img!}
-                audioSrc={post.audio}
-                initialMuted={audioStates[index]?.isMuted ?? true}
-                initialPlaying={audioStates[index]?.isPlaying ?? false}
-              />
-            )}
+          <div>
+            <div
+              className="max-w-[80%] mx-auto"
+              ref={(el) => (videoRefs.current[index] = el)}
+              key={index}
+            >
+              {post.typePost === "VIDEO" ? (
+                <PostVideo
+                  videoSrc={post.video!}
+                  initialMuted={audioStates[index]?.isMuted ?? true}
+                  initialPlaying={audioStates[index]?.isPlaying ?? false}
+                />
+              ) : (
+                <PostMultiImg
+                  images={post.img!}
+                  audioSrc={post.audio}
+                  initialMuted={audioStates[index]?.isMuted ?? true}
+                  initialPlaying={audioStates[index]?.isPlaying ?? false}
+                />
+              )}
+            </div>
+            <div className="flex items-center me-3">
+              <UserPostInfo postData={currentPost} />
+            </div>
           </div>
         ))}
-      </div>
-      <div className="flex items-center me-3">
-        <UserPostInfo postData={currentPost} />
       </div>
     </div>
   );

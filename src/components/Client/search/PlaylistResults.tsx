@@ -1,29 +1,35 @@
 import React from "react";
+import { PlayCircle } from "lucide-react";
 import demo from "../../../assets/images/648dd402d5f169ace2d7116d37f7df8d.jpg";
-const PlaylistResults = () => {
+
+const PlaylistResults: React.FC = () => {
   return (
     <div className="mb-5">
-      <span className="moe-f-s-28 moe-f-w-600">Playlists</span>
+      <h2 className="text-2xl font-semibold">Playlists</h2>
       <div className="mt-2">
-        <div className="d-flex justify-content-center moe-bg-color-black-1d p-3 rounded-4 moe-w-230 position-relative">
-          <div className="w-100">
-            <div className="d-flex position-relative">
+        <div className="flex justify-center bg-black/90 p-3 rounded-lg w-56 relative">
+          <div className="w-full">
+            {/* Ảnh Playlist */}
+            <div className="relative">
               <img
-                className="moe-box-200 moe-img-responsive rounded-2"
+                className="w-48 h-48 object-cover rounded-md"
                 src={demo}
-                alt="IMG"
+                alt="Playlist Cover"
               />
             </div>
-            <div className="d-flex mt-2">
-              <div className="w-75">
-                <h3 className="moe-f-s-18 moe-f-w-600  mb-0 moe-fix-text">
-                  Bông hoa chẳng thuộc về ta dssdsssssssssssssssssssssddđ
+
+            {/* Thông tin Playlist */}
+            <div className="flex items-center mt-2">
+              <div className="w-3/4">
+                <h3 className="text-lg font-semibold truncate">
+                  Bông hoa chẳng thuộc về ta
                 </h3>
-                <span className="moe-f-s-14 moe-fix-text">Nhựt Nguyễn</span>
+                <span className="text-sm text-gray-400">Nhựt Nguyễn</span>
               </div>
-              <span className="ms-auto">
-                <i className="moe-f-s-48 bx bx-play-circle"></i>
-              </span>
+              {/* Nút Play */}
+              <button className="ml-auto text-white hover:text-green-500">
+                <PlayCircle size={42} />
+              </button>
             </div>
           </div>
         </div>

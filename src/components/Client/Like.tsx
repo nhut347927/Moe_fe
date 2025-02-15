@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import img from "../../assets/images/648dd402d5f169ace2d7116d37f7df8d.jpg";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import PostLike from "./search/PostResults";
-import SongLike from "./like/SongLike";
 import BeautifulSearchInput from "./like/BeautifulSearchInput";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Like = () => {
-  const location = useLocation(); // Lấy URI hiện tại
-  const [activeTab, setActiveTab] = useState("post"); // State lưu tab hiện tại
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState("post");
 
   useEffect(() => {
-    // Xác định tab hiện tại dựa trên URI
     if (location.pathname.endsWith("/likes/video")) {
       setActiveTab("video");
     } else if (location.pathname.endsWith("/likes/songs")) {
@@ -20,63 +18,20 @@ const Like = () => {
     }
   }, [location.pathname]);
 
-  // Hàm xử lý tìm kiếm
   const handleSearch = (query: string) => {
-    console.log("Tìm kiếm với từ khóa: ", query);
-    // Xử lý logic tìm kiếm ở đây
-  };
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case "post":
-        return <PostLike />;
-      case "video":
-        return <PostLike />; // Tạm thời dùng chung PostLike
-      case "songs":
-        return <SongLike />;
-      default:
-        return <PostLike />;
-    }
+    console.log("Tìm kiếm với từ khóa:", query);
   };
 
   return (
-    <div className="p-5 pt-3 pb-0">
-      <div className="mb-3">
-        {/* Truyền onSearch vào BeautifulSearchInput */}
-        <BeautifulSearchInput onSearch={handleSearch} />
+    <div className="max-h-screen p-2">
+      <div className="w-full h-full p-4 bg-zinc-200 dark:bg-zinc-900 rounded-lg flex flex-col">
+       <div className="mb-5">
+       <BeautifulSearchInput onSearch={handleSearch} />
+       </div>
+        <ScrollArea className="flex-1 overflow-auto">
+          <PostLike />
+        </ScrollArea>
       </div>
-      <div className="mb-3">
-        <ul className="nav nav-underline">
-          <li className="nav-item">
-            <Link
-              className={`nav-link text-light ${activeTab === "post" ? "active" : ""}`}
-              to="/client/likes/post"
-              onClick={() => setActiveTab("post")}
-            >
-              Post
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link
-              className={`nav-link text-light ${activeTab === "video" ? "active" : ""}`}
-              to="/client/likes/video"
-              onClick={() => setActiveTab("video")}
-            >
-              Video
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link
-              className={`nav-link text-light ${activeTab === "songs" ? "active" : ""}`}
-              to="/client/likes/songs"
-              onClick={() => setActiveTab("songs")}
-            >
-              Songs
-            </Link>
-          </li>
-        </ul>
-      </div>
-      <div>{renderTabContent()}</div>
     </div>
   );
 };
