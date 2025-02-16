@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Play, Pause, Volume2, VolumeX, Repeat, Repeat1 } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 
 interface PostVideoProps {
   videoSrc: string;
@@ -10,14 +10,13 @@ interface PostVideoProps {
 const PostVideo: React.FC<PostVideoProps> = ({
   videoSrc,
   initialMuted = true,
-  initialPlaying = false,
+  initialPlaying = true,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(initialPlaying);
   const [progress, setProgress] = useState(0);
   const [isMuted, setIsMuted] = useState(initialMuted);
-  const [isLooping, setIsLooping] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -91,16 +90,6 @@ const PostVideo: React.FC<PostVideoProps> = ({
     setIsMuted(video.muted);
   };
 
-  // Loop toggle
-  const toggleLoop = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Ngừng sự kiện click lan tỏa lên phần tử bao quanh video
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.loop = !video.loop;
-    setIsLooping(video.loop);
-  };
-
   // Handle progress bar drag
   const handleProgressChange = (clientX: number) => {
     const progressBar = progressBarRef.current;
@@ -147,69 +136,62 @@ const PostVideo: React.FC<PostVideoProps> = ({
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
-
   return (
-    <div className="flex justify-center">
-      <div className="relative h-screen flex items-center" onClick={togglePlay}>
-        {/* Added onClick to the container */}
+    <div className="h-full flex justify-center">
+      <div className="relative flex items-center" onClick={togglePlay}>
+        {/* Video chính */}
         <video
           ref={videoRef}
           src={videoSrc}
-          className="h-auto max-h-[97vh] object-cover shadow-2xl shadow-zinc-900 dark:shadow-zinc-500  rounded-3xl cursor-pointer"
+          className="h-auto max-h-full object-cover cursor-pointer"
           autoPlay={isPlaying}
           muted={isMuted}
-          loop={isLooping}
+          loop
           playsInline
         />
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-          <button
-            className="bg-black bg-opacity-50 rounded-full p-4"
-            onClick={togglePlay}
-            aria-label={isPlaying ? "Pause video" : "Play video"}
-          >
-            {isPlaying ? (
-              <Pause size={48} className="text-white" />
-            ) : (
-              <Play size={48} className="text-white" />
-            )}
-          </button>
-        </div>
-        <div className="absolute bottom-3 left-0 right-0 p-4 bg-zinc-900 rounded-3xl">
-          <div className="flex items-center justify-between">
+  
+        {/* Overlay chứa cả nút Play/Pause & thanh tiến trình */}
+        <div className="absolute inset-0 flex flex-col justify-between opacity-0 hover:opacity-100 transition-opacity duration-300">
+          {/* Nút Play/Pause ở giữa */}
+          <div className="flex-1 flex items-center justify-center">
             <button
-              onClick={toggleMute}
-              className="text-white hover:text-gray-300 transition-colors"
-              aria-label={isMuted ? "Unmute" : "Mute"}
+              onClick={togglePlay}
+              aria-label={isPlaying ? "Pause video" : "Play video"}
             >
-              {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+              {isPlaying ? (
+                <Pause size={48} className="text-white" />
+              ) : (
+                <Play size={48} className="text-white" />
+              )}
             </button>
-            <div
-              ref={progressBarRef}
-              className="w-full mx-4 h-2 bg-gray-600 rounded-full overflow-hidden cursor-pointer"
-              onMouseDown={handleMouseDown}
-            >
+          </div>
+  
+          {/* Thanh tiến trình ở dưới */}
+          <div className="mb-3 px-3">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg">
+              <button
+                onClick={toggleMute}
+                className="text-white hover:text-gray-300"
+              >
+                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+              </button>
               <div
-                className="h-full bg-white"
-                style={{ width: `${progress}%` }}
-              ></div>
+                ref={progressBarRef}
+                className="flex-1 h-1 bg-gray-600 rounded-full cursor-pointer overflow-hidden"
+                onMouseDown={handleMouseDown}
+              >
+                <div className="h-full bg-white" style={{ width: `${progress}%` }} />
+              </div>
+              <span className="text-white text-xs w-24 text-right">
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </span>
             </div>
-            <div className="text-white truncate w-40 text-sm text-center mx-1">
-              {formatTime(currentTime)} / {formatTime(duration)}
-            </div>
-            <button
-              onClick={toggleLoop}
-              className={`text-white hover:text-gray-300 transition-colors ${
-                isLooping ? "text-blue-400" : ""
-              }`}
-              aria-label="Toggle loop"
-            >
-              {isLooping ? <Repeat1 size={24} /> : <Repeat size={24} />}
-            </button>
           </div>
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default PostVideo;

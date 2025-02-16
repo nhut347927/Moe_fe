@@ -56,7 +56,7 @@ const Search: React.FC = () => {
 
   return (
     <div className="max-h-screen p-2">
-      <div className="w-full h-full p-4 bg-zinc-200 dark:bg-zinc-900 rounded-lg flex flex-col">
+      <div className="w-full h-full p-4 bg-zinc-200 dark:bg-zinc-900 rounded-xl flex flex-col">
         {/* Ô tìm kiếm */}
         <div className="mb-4 flex items-center gap-2">
           <SearchIcon className="w-5 h-5 text-gray-600 dark:text-gray-300" />

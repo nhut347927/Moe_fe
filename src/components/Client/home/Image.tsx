@@ -7,8 +7,6 @@ import {
   Pause,
   VolumeX,
   Volume2,
-  Repeat,
-  Repeat1,
 } from "lucide-react";
 
 interface PostMultiImgProps {
@@ -22,12 +20,12 @@ const PostMultiImg: React.FC<PostMultiImgProps> = ({
   images,
   audioSrc = "",
   initialMuted = true,
-  initialPlaying = false,
+  initialPlaying = true,
 }: PostMultiImgProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(initialPlaying);
   const [isMuted, setIsMuted] = useState(initialMuted);
-  const [isRepeat, setIsRepeat] = useState(false);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   // Chuyển đến hình ảnh tiếp theo
@@ -103,12 +101,12 @@ const PostMultiImg: React.FC<PostMultiImgProps> = ({
   }
 
   return (
-    <div className="h-screen flex items-center">
-      <div className=" mx-auto relative">
+    <div className="h-full flex items-center">
+      <div className="h-full mx-auto relative">
         <motion.div
           onHoverStart={() => setIsHovered(true)}
           onHoverEnd={() => setIsHovered(false)}
-          className="relative max-h-screen h-[97vh] aspect-[468/697] overflow-hidden shadow-2xl shadow-zinc-900 dark:shadow-zinc-500  rounded-3xl cursor-pointer "
+          className="relative  max-h-screen h-full aspect-[4/5] overflow-hidden cursor-pointer "
           onClick={toggleAudio}
         >
           <AnimatePresence mode="wait">
@@ -127,27 +125,27 @@ const PostMultiImg: React.FC<PostMultiImgProps> = ({
           {images.length > 1 && (
             <>
               <div
-                className="absolute top-1/2 left-4 transform w-7 h-7 flex items-center justify-center rounded-full opacity-70 bg-zinc-100 hover:opacity-100"
+                className="absolute top-1/2 left-4 transform w-6 h-6 flex items-center justify-center rounded-full opacity-70 bg-zinc-100 hover:opacity-100"
                 onClick={(e) => {
                   e.stopPropagation();
                   prevImage();
                 }}
               >
-                <ChevronLeft className="h-5 w-5 font-bold text-zinc-800" />
+                <ChevronLeft className="h-4 w-4 font-bold text-zinc-800" />
               </div>
               <div
-                className="absolute top-1/2 right-4 transform w-7 h-7 flex items-center justify-center rounded-full opacity-70 bg-zinc-100 hover:opacity-100"
+                className="absolute top-1/2 right-4 transform w-6 h-6 flex items-center justify-center rounded-full opacity-70 bg-zinc-100 hover:opacity-100"
                 onClick={(e) => {
                   e.stopPropagation();
                   nextImage();
                 }}
               >
-                <ChevronRight className="h-5 w-5 font-bold text-zinc-800" />
+                <ChevronRight className="h-4 w-4 font-bold text-zinc-800" />
               </div>
             </>
           )}
           {isHovered && (
-            <div className="absolute top-0 left-0 right-0 p-6 text-white space-x-3">
+            <div className="absolute top-0 left-0 right-0 p-3 text-white space-x-3">
               <button
                 onClick={toggleAudio}
                 className="p-2 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-75"
@@ -161,22 +159,15 @@ const PostMultiImg: React.FC<PostMultiImgProps> = ({
               >
                 {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
               </button>
-
-              <button
-                onClick={() => setIsRepeat(!isRepeat)}
-                className="p-2 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-75"
-              >
-                {isRepeat ? <Repeat1 size={20} /> : <Repeat size={20} />}
-              </button>
             </div>
           )}
           {images.length > 1 && (
-            <div className="absolute bottom-9 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
               {images.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}
-                  className={`h-2 w-2 rounded-full ${
+                  className={`h-1.5 w-1.5 rounded-full ${
                     currentImageIndex === index
                       ? "bg-zinc-50 dark:bg-zinc-50"
                       : "bg-zinc-400 dark:bg-zinc-400"
@@ -194,11 +185,9 @@ const PostMultiImg: React.FC<PostMultiImgProps> = ({
           muted={initialMuted}
           autoPlay={initialPlaying}
           onEnded={() => {
-            if (isRepeat && audioRef.current) {
+            if (audioRef.current) {
               audioRef.current.currentTime = 0;
               audioRef.current.play();
-            } else {
-              setIsPlaying(false);
             }
           }}
         />

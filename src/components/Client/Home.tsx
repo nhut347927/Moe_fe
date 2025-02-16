@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import img1 from "../../assets/images/Pin by Alva Psyche on A Tổng hợp _ Daisy wallpaper, Flowers photography wallpaper, Flowery wallpaper.jpg";
 import img2 from "../../assets/images/bg-demo.jpg";
 import img3 from "../../assets/images/demo.jpg";
@@ -6,10 +6,9 @@ import img4 from "../../assets/images/girl.png";
 import img5 from "../../assets/images/hoavang.jpg";
 import img6 from "../../assets/images/hoaxanh.jpg";
 import img7 from "../../assets/images/tải xuống.jpg";
-import PostMultiImg from "./home/PostImage"; // Đảm bảo đường dẫn này đúng
-import UserPostInfo from "./home/UserPostInfo";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import PostVideo from "./home/PostVideo";
+import PostMultiImg from "./home/Image";
+import UserInfo from "./home/UserInfo";
+import PostVideo from "./home/Video";
 import vid1 from "../../assets/video/vid1.mp4";
 import vid2 from "../../assets/video/vid2.mp4";
 import vid3 from "../../assets/video/vid3.mp4";
@@ -17,6 +16,7 @@ import vid4 from "../../assets/video/vid4.mp4";
 import vid5 from "../../assets/video/vid5.mp4";
 import vid6 from "../../assets/video/vid6.mp4";
 import audio from "../../assets/audio/idt41104.mp3";
+import ActionBar from "./home/ActionBar";
 
 type Comment = {
   avatar: string;
@@ -108,12 +108,68 @@ const postData: Post[] = [
     userName: "Alice Cooper",
     postCount: "5 bài viết",
     followers: "800",
-    bio: "Thích sáng tạo nội dung và chia sẻ những video thú vị!",
+    bio: "Thích sáng tạo nội dung và chia sẻ những video thú vị thú cij thú cị thúc cị tịc dđ đ d d d d d d d d d d  d d d d d d d d d d d s d te ty g ưgfd df df df d f wefadf wfe fa fq f à a!",
     favoriteSong: "Don't Start Now - Dua Lipa",
     songImage: img5,
     likes: "150",
     commentsCount: "3",
     comments: [
+      {
+        avatar: img4,
+        initials: "AC",
+        userName: "Paul White",
+        content: "Video này thật sự rất sáng tạo!",
+        time: "3 giờ trước",
+      },
+      {
+        avatar: img4,
+        initials: "AC",
+        userName: "Paul White",
+        content: "Video này thật sự rất sáng tạo!",
+        time: "3 giờ trước",
+      },
+      {
+        avatar: img4,
+        initials: "AC",
+        userName: "Paul White",
+        content: "Video này thật sự rất sáng tạo!",
+        time: "3 giờ trước",
+      },
+      {
+        avatar: img4,
+        initials: "AC",
+        userName: "Paul White",
+        content: "Video này thật sự rất sáng tạo!",
+        time: "3 giờ trước",
+      },
+      {
+        avatar: img4,
+        initials: "AC",
+        userName: "Paul White",
+        content: "Video này thật sự rất sáng tạo!",
+        time: "3 giờ trước",
+      },
+      {
+        avatar: img4,
+        initials: "AC",
+        userName: "Paul White",
+        content: "Video này thật sự rất sáng tạo!",
+        time: "3 giờ trước",
+      },
+      {
+        avatar: img4,
+        initials: "AC",
+        userName: "Paul White",
+        content: "Video này thật sự rất sáng tạo!",
+        time: "3 giờ trước",
+      },
+      {
+        avatar: img4,
+        initials: "AC",
+        userName: "Paul White",
+        content: "Video này thật sự rất sáng tạo!",
+        time: "3 giờ trước",
+      },
       {
         avatar: img4,
         initials: "AC",
@@ -136,7 +192,11 @@ const postData: Post[] = [
   },
   {
     avatar: img1,
-    img: [img5, img1, img3],
+    img: [
+      "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
+      img1,
+      img3,
+    ],
     userName: "Bob Martin 666",
     postCount: "20 bài viết",
     followers: "3K",
@@ -280,61 +340,76 @@ const postData: Post[] = [
     video: vid3, // Đường dẫn video
   },
 ];
-
 const Home = () => {
   const videoRefs = useRef<(HTMLDivElement | null)[]>([]);
   const currentIndex = useRef<number>(0);
   const lastScrollTime = useRef<number>(0);
   const [audioStates, setAudioStates] = useState<
     Record<number, { isPlaying: boolean; isMuted: boolean }>
-  >({}); // Track audio state for each post
-  const [currentPost, setCurrentPost] = useState<Post>(postData[0]); // Lưu bài đăng hiện tại
+  >({});
+  const [currentPost, setCurrentPost] = useState<Post>(postData[0]);
+  const [userInfoStates, setUserInfoStates] = useState<Record<number, boolean>>({}); 
+
+  // Hàm toggle hiển thị UserInfo
+  const toggleUserInfo = (index: number) => {
+    setUserInfoStates((prevStates) => ({
+      ...prevStates,
+      [index]: !prevStates[index],
+    }));
+  };
 
   useEffect(() => {
     const handleScroll = (event: WheelEvent) => {
       const videoContainer = document.getElementById("video-container");
-      if (!videoContainer || !videoContainer.contains(event.target as Node))
-        return;
-
+    
+      if (document.querySelector(".user-info")?.contains(event.target as Node)) {
+        return; // Không cuộn nếu đang hover vào user info
+      }
+    
+      if (!videoContainer || !videoContainer.contains(event.target as Node)) return;
+    
       event.preventDefault();
       const now = Date.now();
       if (now - lastScrollTime.current < 300) return;
-
-      const delta = Math.sign(event.deltaY); // Tính hướng cuộn (lên hoặc xuống)
-      currentIndex.current = Math.min(
+    
+      const delta = Math.sign(event.deltaY);
+      const newIndex = Math.min(
         Math.max(currentIndex.current + delta, 0),
         videoRefs.current.length - 1
       );
-
-      const target = videoRefs.current[currentIndex.current];
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "center" });
-        const newPost = postData[currentIndex.current];
-        setCurrentPost(newPost);
-
-        // Update audio state for the active post
-        setAudioStates((prevStates) => {
-          const updatedStates = { ...prevStates };
-          // Stop audio for all other posts
-          Object.keys(updatedStates).forEach((key) => {
-            if (parseInt(key) !== currentIndex.current) {
-              updatedStates[parseInt(key)] = {
-                isPlaying: false,
-                isMuted: true,
-              }; // Stop other audios
-            }
+    
+      if (newIndex !== currentIndex.current) {
+        currentIndex.current = newIndex;
+        const target = videoRefs.current[currentIndex.current];
+    
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth", block: "center" });
+          setCurrentPost(postData[currentIndex.current]);
+    
+          // 🔹 Không thay đổi trạng thái UserInfo khi lướt qua bài khác
+          setAudioStates((prevStates) => {
+            const updatedStates = { ...prevStates };
+            Object.keys(updatedStates).forEach((key) => {
+              if (parseInt(key) !== currentIndex.current) {
+                updatedStates[parseInt(key)] = {
+                  isPlaying: false,
+                  isMuted: true,
+                };
+              }
+            });
+    
+            updatedStates[currentIndex.current] = {
+              isPlaying: true,
+              isMuted: false,
+            };
+            return updatedStates;
           });
-          // Set the current post's audio state
-          updatedStates[currentIndex.current] = {
-            isPlaying: true,
-            isMuted: false,
-          };
-          return updatedStates;
-        });
+        }
       }
-
+    
       lastScrollTime.current = now;
     };
+    
 
     window.addEventListener("wheel", handleScroll, { passive: false });
     return () => {
@@ -343,35 +418,54 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <div className="max-h-screen p-2">
       <div
         id="video-container"
-        className="w-full max-h-screen overflow-y-auto overflow-x-hidden scroll-but-hidden"
+        className="h-full bg-zinc-200 dark:bg-zinc-900 rounded-xl overflow-y-auto overflow-x-hidden scroll-but-hidden"
       >
         {postData.map((post, index) => (
-          <div>
-            <div
-              className="max-w-[80%] mx-auto"
-              ref={(el) => (videoRefs.current[index] = el)}
-              key={index}
-            >
-              {post.typePost === "VIDEO" ? (
-                <PostVideo
-                  videoSrc={post.video!}
-                  initialMuted={audioStates[index]?.isMuted ?? true}
-                  initialPlaying={audioStates[index]?.isPlaying ?? false}
-                />
-              ) : (
-                <PostMultiImg
-                  images={post.img!}
-                  audioSrc={post.audio}
-                  initialMuted={audioStates[index]?.isMuted ?? true}
-                  initialPlaying={audioStates[index]?.isPlaying ?? false}
-                />
-              )}
-            </div>
-            <div className="flex items-center me-3">
-              <UserPostInfo postData={currentPost} />
+          <div
+            key={index}
+            className="w-full max-h-screen h-screen p-9 flex items-center justify-center"
+          >
+            <div className="flex h-full">
+              <div className="flex bg-zinc-950 border">
+                <div
+                  ref={(el) => (videoRefs.current[index] = el)}
+                  className="flex-1"
+                >
+                  {post.typePost === "VIDEO" ? (
+                    <PostVideo
+                      videoSrc={post.video!}
+                      initialMuted={audioStates[index]?.isMuted ?? true}
+                      initialPlaying={audioStates[index]?.isPlaying ?? false}
+                    />
+                  ) : (
+                    <PostMultiImg
+                      images={post.img!}
+                      audioSrc={post.audio}
+                      initialMuted={audioStates[index]?.isMuted ?? true}
+                      initialPlaying={audioStates[index]?.isPlaying ?? false}
+                    />
+                  )}
+                </div>
+
+                {/* 🔹 UserInfo có animation */}
+                <div
+                  className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                    userInfoStates[index]
+                      ? "w-[500px] translate-x-0"
+                      : "w-0 translate-x-full"
+                  }`}
+                >
+                  <UserInfo postData={post} />
+                </div>
+              </div>
+
+              {/* 🔹 Truyền toggleUserInfo vào ActionBar */}
+              <div className="ms-2 flex flex-col justify-end">
+                <ActionBar toggleUserInfo={() => toggleUserInfo(index)} />
+              </div>
             </div>
           </div>
         ))}
