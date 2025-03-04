@@ -5,37 +5,54 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-type Comment = {
-  avatar: string;
-  initials: string;
-  userName: string;
+
+
+type Reply = {
+  commentId: string;
+  userAvatar: string;
   content: string;
-  time: string;
+  displayName: string;
+  createdAt: string;
+};
+type Comment = {
+  commentId: string;
+  userAvatar: string;
+  content: string;
+  displayName: string;
+  createdAt: string;
+  replies: Reply[];
 };
 
 type Post = {
-  avatar: string;
-  img: string[];
-  userName: string;
-  postCount: string;
-  followers: string;
-  bio: string;
-  favoriteSong: string;
-  songImage: string;
-  likes: string;
-  commentsCount: string;
+  userId: string;
+  postId: string;
+  createdAt: string;
+
+  userAvatar: string;
+  userDisplayName: string;
+
+  postType: "VIDEO" | "IMG";
+  videoUrl: string;
+  imageUrls: string[];
+  caption: string;
+
+  likeCount: string;
+  commentCount: string;
+  playlistCount: string;
+
+  audioUrl: string;
+  audioOwnerAvatar: string;
+  audioOwnerName: string;
+  audioId: string;
+
   comments: Comment[];
-  audio: string;
-  ownerAudioPostId: string;
-  typePost: "VIDEO" | "IMG";
-  video: string;
 };
 
 type PostProps = {
   postData: Post;
 };
 
-const UserInfo: React.FC<PostProps> = ({ postData }) => {
+const Detail: React.FC<PostProps> = ({ postData }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -50,13 +67,13 @@ const UserInfo: React.FC<PostProps> = ({ postData }) => {
             {/* User Information Section */}
             <div className="flex items-center space-x-4 p-5">
               <Avatar className="h-12 w-12">
-                <AvatarImage src={postData?.avatar} className="object-cover" />
+                <AvatarImage src={postData?.userAvatar} className="object-cover" />
                 <AvatarFallback>U</AvatarFallback>
               </Avatar>
               <div className="flex flex-col w-full">
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-semibold truncate">
-                    {postData?.userName || "Unknown User"}
+                    {postData?.userDisplayName || "Unknown User"}
                   </span>
                   <div className="flex space-x-2">
                     <Button className="h-8 w-20 rounded-full">Follow</Button>
@@ -70,14 +87,14 @@ const UserInfo: React.FC<PostProps> = ({ postData }) => {
             <div className="px-5 mb-3">
               <p
                 className={`break-words text-sm ${
-                  postData?.bio?.length > 100 && !isExpanded
+                  postData?.caption?.length > 100 && !isExpanded
                     ? "line-clamp-2"
                     : ""
                 }`}
               >
-                {postData?.bio || ""}
+                {postData?.caption || ""}
               </p>
-              {postData?.bio?.length > 100 && (
+              {postData?.caption?.length > 100 && (
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
                   className="text-zinc-500 hover:underline cursor-pointer text-sm"
@@ -96,15 +113,15 @@ const UserInfo: React.FC<PostProps> = ({ postData }) => {
                   <div key={i} className="flex space-x-3">
                     <Avatar className="h-8 w-8">
                       <AvatarImage
-                        src={comment.avatar || "default_avatar_url"}
+                        src={comment.userAvatar || "default_avatar_url"}
                         className="object-cover"
                       />
-                      <AvatarFallback>{comment.initials || "U"}</AvatarFallback>
+                      <AvatarFallback>{"U"}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
                         <p className="text-sm font-medium leading-none break-all">
-                          {comment.userName || "Anonymous"}
+                          {comment.displayName || "Anonymous"}
                         </p>
                         <Button variant="ghost" size="icon" className="h-8 w-8">
                           <MoreHorizontal className="h-4 w-4" />
@@ -114,7 +131,7 @@ const UserInfo: React.FC<PostProps> = ({ postData }) => {
                         {comment.content || "No comment content provided."}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {comment.time || "Just now"}
+                        {comment.createdAt || "Just now"}
                       </p>
                     </div>
                   </div>
@@ -132,7 +149,7 @@ const UserInfo: React.FC<PostProps> = ({ postData }) => {
         </ScrollArea>
 
         {/* Comment Input Form */}
-        <div className="bg-white dark:bg-black p-3 border-t">
+        <div className="p-3 border-t">
           <form className="flex items-center space-x-2">
             <Input
               className="flex-grow rounded-lg"
@@ -148,4 +165,4 @@ const UserInfo: React.FC<PostProps> = ({ postData }) => {
   );
 };
 
-export default UserInfo;
+export default Detail;

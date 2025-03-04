@@ -6,7 +6,7 @@ export const getAxiosInstance = (): AxiosInstance => {
   if (!axiosInstance) {
     axiosInstance = axios.create({
       baseURL: import.meta.env.VITE_APP_API_BASE_URL,
-      timeout: 10000,
+      timeout: 60000,
       withCredentials: true,
     });
   }

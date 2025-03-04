@@ -6,8 +6,10 @@ import PlaylistAndArtists from "../components/Client/PlaylistAndArtists";
 import Search from "../components/Client/Search";
 import Like from "../components/Client/Like";
 import Chat from "../components/Client/chat";
-import Playlist from "@/components/Client/Playlist";
-
+import Playlist from "../components/Client/Playlist";
+import ContentCreationHub from "../components/Client/upload/ContentCreationHub";
+import PostCreator from "../components/Client/upload/PostCreator";
+import LivestreamCreator from "../components/Client/upload/LivestreamCreator";
 
 const Client = () => {
   return (
@@ -26,6 +28,10 @@ const Client = () => {
         <Route path="/likes/*" element={<Like />} />
         <Route path="/likes/post" element={<Like />} /> 
         <Route path="/likes/video" element={<Like />} /> 
+
+        <Route path="/upload/" element={<ContentCreationHub />} /> 
+        <Route path="/upload/new-post" element={<PostCreator />} /> 
+        <Route path="/upload/live" element={<LivestreamCreator />} /> 
         
         <Route path="/chat" element={<Chat />} />
         <Route path="*" element={<NotFound />} />

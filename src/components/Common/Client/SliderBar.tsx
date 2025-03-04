@@ -126,18 +126,18 @@ const SliderBar: React.FC = () => {
     },
   ];
 
-  const [selectedPlaylists, setSelectedPlaylists] = useState<number[]>([1]);
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [selectedPlaylists, setSelectedPlaylists] = useState<number[]>([1]);
+  // const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredPlaylists = playlists.filter((playlist) =>
-    playlist.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredPlaylists = playlists.filter((playlist) =>
+  //   playlist.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
-  const togglePlaylist = (id: number) => {
-    setSelectedPlaylists((prev) =>
-      prev.includes(id) ? prev.filter((pId) => pId !== id) : [...prev, id]
-    );
-  };
+  // const togglePlaylist = (id: number) => {
+  //   setSelectedPlaylists((prev) =>
+  //     prev.includes(id) ? prev.filter((pId) => pId !== id) : [...prev, id]
+  //   );
+  // };
 
   useEffect(() => {
     if (uri === "/client/home") {
@@ -147,7 +147,7 @@ const SliderBar: React.FC = () => {
   return (
     <nav className="max-h-screen p-2 pe-0">
       <div
-        className={`h-full flex flex-col transition-all  rounded-md duration-300 ease-in-out ${
+        className={`h-full flex flex-col transition-all  rounded-xl duration-300 ease-in-out ${
           isCollapsed ? "w-20" : "w-80"
         } ${
           uri === "/client/yourspace"
@@ -182,7 +182,7 @@ const SliderBar: React.FC = () => {
               key={index}
               to={link.to}
               onClick={() => setUri(link.to)}
-              className={`flex gap-2 p-2 m-0 rounded-md ${
+              className={`flex gap-2 p-2 m-0 rounded-xl ${
                 uri === link.to
                   ? "bg-zinc-200 dark:bg-zinc-800"
                   : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
@@ -232,7 +232,7 @@ const SliderBar: React.FC = () => {
                           <button
                             id={option.id}
                             className={cn(
-                              "w-full text-left px-2 py-1 flex items-center justify-between rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800",
+                              "w-full text-left px-2 py-1 flex items-center justify-between rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800",
                               selectedSort === option.value
                                 ? "text-green-600 font-semibold"
                                 : "text-zinc-800 dark:text-zinc-300"
@@ -259,10 +259,10 @@ const SliderBar: React.FC = () => {
             {items.map((item, index) => (
               <div
                 key={index}
-                className="group relative rounded-md overflow-hidden cursor-pointer"
+                className="group relative rounded-xl overflow-hidden cursor-pointer"
               >
-                <div className="flex items-center p-2 rounded-lg relative">
-                  <div className="h-12 w-12 min-w-[48px] min-h-[48px] rounded-md overflow-hidden relative flex-shrink-0">
+                <div className="flex items-center p-2 rounded-xl relative">
+                  <div className="h-12 w-12 min-w-[48px] min-h-[48px] rounded-xl overflow-hidden relative flex-shrink-0">
                     <img
                       src={item.imgSrc}
                       alt="Playlist"
@@ -290,7 +290,7 @@ const SliderBar: React.FC = () => {
           </div>
         </div>
 
-        {/* Now Playing Section */}
+        {/* Now Playing Section
         {!isCollapsed ? (
           <div className="mt-auto w-full">
             <div className="p-2">
@@ -424,7 +424,7 @@ const SliderBar: React.FC = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </nav>
   );

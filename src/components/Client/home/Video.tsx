@@ -137,12 +137,12 @@ const PostVideo: React.FC<PostVideoProps> = ({
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
   return (
-    <div className="h-full flex justify-center">
+    <div className="mx-auto h-full flex justify-center">
       <div className="relative flex items-center" onClick={togglePlay}>
         {/* Video chính */}
         <video
           ref={videoRef}
-          src={videoSrc}
+          src={`https://res.cloudinary.com/dwv76nhoy/video/upload/${videoSrc}`}
           className="h-auto max-h-full object-cover cursor-pointer"
           autoPlay={isPlaying}
           muted={isMuted}

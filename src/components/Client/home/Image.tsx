@@ -101,7 +101,7 @@ const PostMultiImg: React.FC<PostMultiImgProps> = ({
   }
 
   return (
-    <div className="h-full flex items-center">
+    <div className="mx-auto h-full flex items-center">
       <div className="h-full mx-auto relative">
         <motion.div
           onHoverStart={() => setIsHovered(true)}
@@ -112,7 +112,7 @@ const PostMultiImg: React.FC<PostMultiImgProps> = ({
           <AnimatePresence mode="wait">
             <motion.img
               key={currentImageIndex}
-              src={images[currentImageIndex]}
+              src={`https://res.cloudinary.com/dwv76nhoy/image/upload/${images[currentImageIndex]}`}
               alt={`Image ${currentImageIndex + 1}`}
               className="w-full h-full moe-style object-cover absolute inset-0"
               initial={{ opacity: 0 }}
@@ -181,7 +181,7 @@ const PostMultiImg: React.FC<PostMultiImgProps> = ({
 
         <audio
           ref={audioRef}
-          src={audioSrc}
+          src={`https://res.cloudinary.com/dwv76nhoy/video/upload/${audioSrc}`}
           muted={initialMuted}
           autoPlay={initialPlaying}
           onEnded={() => {

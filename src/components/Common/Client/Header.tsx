@@ -40,21 +40,18 @@ export default function Header() {
         </DropdownMenu>
 
         {/* Create New Button */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" className="p-1 rounded-full">
-              <SquarePlus className="h-4 w-4" />
-              <span className="sr-only">Create new</span>
+
+        <Link to="/client/upload/">
+        
+          <Button
+              variant="outline"
+              size="icon"
+              className="relative p-1 rounded-full"
+            >
+               <SquarePlus className="h-4 w-4" />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Create new</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>New post</DropdownMenuItem>
-            <DropdownMenuItem>New story</DropdownMenuItem>
-            <DropdownMenuItem>New live stream</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        </Link>
+
         <ModeToggle />
         {/* User Avatar */}
         <DropdownMenu>
@@ -67,10 +64,18 @@ export default function Header() {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <Link to="/">  <DropdownMenuItem>Profile</DropdownMenuItem></Link>
-            <Link to="/auth/login"> <DropdownMenuItem>Login</DropdownMenuItem></Link>
-            <Link to="/auth/register">   <DropdownMenuItem>Register</DropdownMenuItem></Link>
-            <Link to="/auth/change-password">   <DropdownMenuItem>Change Password</DropdownMenuItem></Link>
+            <Link to="/">
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+            </Link>
+            <Link to="/auth/login">
+              <DropdownMenuItem>Login</DropdownMenuItem>
+            </Link>
+            <Link to="/auth/register">
+              <DropdownMenuItem>Register</DropdownMenuItem>
+            </Link>
+            <Link to="/auth/change-password">
+              <DropdownMenuItem>Change Password</DropdownMenuItem>
+            </Link>
             <DropdownMenuItem>Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
