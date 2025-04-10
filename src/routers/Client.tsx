@@ -1,26 +1,25 @@
 import { Route, Routes } from "react-router-dom";
 import ClientLayout from "../layouts/ClientLayout";
-import Home from "../pages/Client/Home";
+import Home from "../pages/Client/home/HomePage";
 import NotFound from "../components/Common/NotFound";
-import PlaylistAndArtists from "../pages/Client/PlaylistAndArtists";
-import Search from "../pages/Client/Search";
-import Like from "../pages/Client/Like";
-import Chat from "../pages/Client/chat";
-import Playlist from "../pages/Client/Playlist";
+import Search from "../pages/Client/search/SearchPage";
+import Like from "../pages/Client/like/LikePage";
+import Chat from "../pages/Client/chat/ChatPage";
+import Playlist from "../pages/Client/playlist/PlaylistPage";
 import ContentCreationHub from "../pages/Client/upload/ContentCreationHub";
 import PostCreator from "../pages/Client/upload/PostCreator";
 import LivestreamCreator from "../pages/Client/upload/LivestreamCreator";
-import Profile from "../pages/Client/Profile"
-import Explore from "@/pages/Client/Explore";
-import Demo from "@/pages/Client/Meet";
-import MeetRoom from "@/pages/Client/Meet-Join";
+import Profile from "../pages/Client/profile/ProfilePage"
+import Explore from "@/pages/Client/explore/ExplorePage";
+import CardVariants from "@/pages/Client/other/CardVariants";
 const Client = () => {
   return (
     <ClientLayout>
       <Routes>
         <Route path="/home" element={<Home />} />
-        <Route path="/playlist&artists" element={<PlaylistAndArtists />} />
+
         <Route path="/playlist" element={<Playlist />} />
+        <Route path="/card" element={<CardVariants />} />
 
         <Route path="/search/*" element={<Search />} />
         <Route path="/search/post" element={<Search />} />
@@ -39,13 +38,6 @@ const Client = () => {
         <Route path="/profile" element={<Profile />} /> 
 
         <Route path="/explore" element={<Explore />} /> 
-
-        {/* Route cho trang demo mặc định */}
-        <Route path="/meet" element={<MeetRoom />} />
-        <Route path="/demo" element={<Demo />} />
-        {/* Route cho tham gia phòng bằng roomId */}
-        <Route path="/demo/:roomCode/:token" element={<Demo />} />
-
         
         <Route path="/chat" element={<Chat />} />
         <Route path="*" element={<NotFound />} />

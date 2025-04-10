@@ -5,28 +5,23 @@ import {
   Search,
   Heart,
   List,
-  Shuffle,
-  SkipForward,
-  Repeat,
   Play,
   Library,
-  Volume2,
   Check,
   MessageCircle,
   Compass,
   Settings,
 } from "lucide-react";
-import img from "../../../assets/images/Logo.png";
-import girl from "../../../assets/images/girl.png";
+import img from "../../assets/images/logo.png";
+import girl from "../../assets/images/girl.png";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Slider } from "@/components/ui/slider";
-import { cn } from "@/common/utils/utils"
+
+import { cn } from "@/common/utils/utils";
 import AddPlaylistModal from "@/components/dialog/AddPlaylistDialog";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -164,13 +159,10 @@ const SliderBar: React.FC = () => {
   return (
     <nav className="max-h-screen p-2 pe-0">
       <div
-        className={`h-full flex flex-col transition-all  rounded-xl duration-300 ease-in-out ${
+        className={`h-full flex flex-col bg-white/50 dark:bg-zinc-800/70 shadow-2xl
+        text-white dark:text-white transition-all  rounded-3xl duration-300 ease-in-out ${
           isCollapsed ? "w-20" : "w-80"
-        } ${
-          uri === "/client/yourspace"
-            ? "bg-[rgba(255,255,255,0.3)] dark:bg-[rgba(0,0,0,0.3)]"
-            : "bg-zinc-300 dark:bg-zinc-900"
-        } text-white dark:text-white`}
+        }`}
       >
         {/* Header */}
         <div className="flex items-center mt-3">
@@ -258,7 +250,7 @@ const SliderBar: React.FC = () => {
             <span className="block h-[3px] w-[48px] ms-4 rounded-full bg-zinc-600 dark:bg-zinc-300"></span>
           )}
 
-          <div className="overflow-y-auto overflow-x-hidden scroll-but-hidden px-2">
+          <ScrollArea className="overflow-y-auto overflow-x-hidden scroll-but-hidden px-2">
             {items.map((item, index) => (
               <div
                 key={index}
@@ -290,7 +282,7 @@ const SliderBar: React.FC = () => {
                 </Link>
               </div>
             ))}
-          </div>
+          </ScrollArea>
         </div>
 
         {/* Now Playing Section
@@ -472,16 +464,16 @@ const SliderBar: React.FC = () => {
                 </DropdownMenu>
                 <div className="ml-3">
                   <div className="flex items-center">
-                    <span className="font-medium text-sm text-zinc-800 dark:text-zinc-200">
+                    <span className="font-semibold text-[15px] text-zinc-800 dark:text-zinc-50">
                       Nhựt Nguyễn
                     </span>
                     <Badge className="ml-2 h-5 px-1.5 bg-primary/20 text-primary text-xs">
                       Pro
                     </Badge>
                   </div>
-                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                  <Link to={"/client/profile"}  className="text-zinc-500 text-sm hover:underline hover:text-zinc-800 dark:text-zinc-300 dark:hover:text-zinc-50">
                     @nhutnguyen
-                  </span>
+                  </Link>
                 </div>
               </div>
               <TooltipProvider>
@@ -505,7 +497,7 @@ const SliderBar: React.FC = () => {
             <div className="flex justify-center">
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger asChild>
+                  <TooltipTrigger>
                     {/* User Avatar */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

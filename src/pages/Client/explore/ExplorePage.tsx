@@ -1,4 +1,4 @@
-import { PlaylistSection } from "./playlist-section"
+import { PlaylistSection } from "./playlist-section";
 
 export default function HomePage() {
   // Dữ liệu mẫu cho các playlist
@@ -43,7 +43,7 @@ export default function HomePage() {
       totalTracks: 15,
       creator: "Spotify",
     },
-  ]
+  ];
 
   const todayHotHits = [
     {
@@ -86,7 +86,7 @@ export default function HomePage() {
       totalTracks: 20,
       creator: "Spotify",
     },
-  ]
+  ];
 
   const weeklyHotHits = [
     {
@@ -129,7 +129,7 @@ export default function HomePage() {
       totalTracks: 30,
       creator: "Spotify",
     },
-  ]
+  ];
 
   const yearlyTrends = [
     {
@@ -172,7 +172,7 @@ export default function HomePage() {
       totalTracks: 50,
       creator: "Spotify",
     },
-  ]
+  ];
 
   const friendsCircle = [
     {
@@ -215,7 +215,7 @@ export default function HomePage() {
       totalTracks: 25,
       creator: "Nhóm bạn thân",
     },
-  ]
+  ];
 
   const peopleAlsoListen = [
     {
@@ -258,23 +258,30 @@ export default function HomePage() {
       totalTracks: 35,
       creator: "Spotify",
     },
-  ]
+  ];
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Khám phá</h1>
+    <div className="h-screen max-h-screen p-2">
+      <div className="h-full rounded-3xl overflow-y-auto overflow-x-hidden scroll-but-hidden bg-white/50 dark:bg-zinc-800/70">
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-3xl font-bold mb-8">Khám phá</h1>
 
-        <div className="space-y-10">
-          <PlaylistSection title="Các Bài Đăng Mới" playlists={newReleases} />
-          <PlaylistSection title="Hot Hit Hôm Nay" playlists={todayHotHits} />
-          <PlaylistSection title="Hot Hit Tuần" playlists={weeklyHotHits} />
-          <PlaylistSection title="Xu Hướng Năm Nay" playlists={yearlyTrends} />
-          <PlaylistSection title="Vòng Bạn Bè" playlists={friendsCircle} />
-          <PlaylistSection title="Mọi Người Cũng Nghe" playlists={peopleAlsoListen} />
+          <div className="space-y-10">
+            <PlaylistSection title="Các Bài Đăng Mới" playlists={newReleases} />
+            <PlaylistSection title="Hot Hit Hôm Nay" playlists={todayHotHits} />
+            <PlaylistSection title="Hot Hit Tuần" playlists={weeklyHotHits} />
+            <PlaylistSection
+              title="Xu Hướng Năm Nay"
+              playlists={yearlyTrends}
+            />
+            <PlaylistSection title="Vòng Bạn Bè" playlists={friendsCircle} />
+            <PlaylistSection
+              title="Mọi Người Cũng Nghe"
+              playlists={peopleAlsoListen}
+            />
+          </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
-

@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Heart,
   MessageCircle,
@@ -28,8 +28,8 @@ import {
   Plus,
   Eye,
   Award,
-} from "lucide-react"
-import { cn } from "@/common/utils/utils"
+} from "lucide-react";
+import { cn } from "@/common/utils/utils";
 
 // Dữ liệu mẫu
 const SAMPLE_DATA = {
@@ -170,7 +170,8 @@ const SAMPLE_DATA = {
     {
       id: 2,
       title: "Cà phê sáng tạo tại Hà Nội",
-      excerpt: "Khám phá những quán cà phê độc đáo và sáng tạo nhất tại thủ đô.",
+      excerpt:
+        "Khám phá những quán cà phê độc đáo và sáng tạo nhất tại thủ đô.",
       content:
         "Hà Nội không chỉ nổi tiếng với cà phê trứng truyền thống mà còn có rất nhiều quán cà phê sáng tạo, độc đáo. Trong video này, tôi sẽ đưa các bạn đi khám phá 5 quán cà phê có concept ấn tượng nhất tại Hà Nội...",
       image: "/placeholder.svg?height=300&width=400",
@@ -211,153 +212,187 @@ const SAMPLE_DATA = {
       location: "Quận 1, TP. Hồ Chí Minh",
     },
   ],
-}
+};
 
 export default function CardVariants() {
-  const [activeTab, setActiveTab] = useState("users")
+  const [activeTab, setActiveTab] = useState("users");
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <h1 className="text-3xl font-bold mb-6">Các biến thể Card</h1>
+    <div className="max-h-screen p-2">
+      <div className="h-full rounded-3xl overflow-y-auto overflow-x-hidden scroll-but-hidden">
+        <h1 className="text-3xl font-bold mb-6">Các biến thể Card</h1>
 
-      <Tabs defaultValue="users" value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full justify-start mb-6">
-          <TabsTrigger value="users" className="rounded-xl">
-            <User className="h-4 w-4 mr-2" />
-            Người dùng
-          </TabsTrigger>
-          <TabsTrigger value="posts" className="rounded-xl">
-            <ImageIcon className="h-4 w-4 mr-2" />
-            Bài đăng
-          </TabsTrigger>
-          <TabsTrigger value="playlists" className="rounded-xl">
-            <Music className="h-4 w-4 mr-2" />
-            Playlist
-          </TabsTrigger>
-        </TabsList>
+        <Tabs
+          defaultValue="users"
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="w-full"
+        >
+          <TabsList className="w-full justify-start mb-6">
+            <TabsTrigger value="users" className="rounded-xl">
+              <User className="h-4 w-4 mr-2" />
+              Người dùng
+            </TabsTrigger>
+            <TabsTrigger value="posts" className="rounded-xl">
+              <ImageIcon className="h-4 w-4 mr-2" />
+              Bài đăng
+            </TabsTrigger>
+            <TabsTrigger value="playlists" className="rounded-xl">
+              <Music className="h-4 w-4 mr-2" />
+              Playlist
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="users" className="space-y-8">
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Thẻ người dùng cơ bản</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {SAMPLE_DATA.users.map((user) => (
-                <UserCardBasic key={user.id} user={user} />
-              ))}
+          <TabsContent value="users" className="space-y-8">
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">
+                Thẻ người dùng cơ bản
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {SAMPLE_DATA.users.map((user) => (
+                  <UserCardBasic key={user.id} user={user} />
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Thẻ người dùng nổi bật</h2>
-            <div className="grid grid-cols-1 gap-6">
-              {SAMPLE_DATA.users.slice(0, 1).map((user) => (
-                <UserCardFeatured key={user.id} user={user} />
-              ))}
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">
+                Thẻ người dùng nổi bật
+              </h2>
+              <div className="grid grid-cols-1 gap-6">
+                {SAMPLE_DATA.users.slice(0, 1).map((user) => (
+                  <UserCardFeatured key={user.id} user={user} />
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Thẻ người dùng nhỏ gọn</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {SAMPLE_DATA.users.map((user) => (
-                <UserCardCompact key={user.id} user={user} />
-              ))}
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">
+                Thẻ người dùng nhỏ gọn
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {SAMPLE_DATA.users.map((user) => (
+                  <UserCardCompact key={user.id} user={user} />
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Thẻ người dùng ngang</h2>
-            <div className="space-y-4">
-              {SAMPLE_DATA.users.map((user) => (
-                <UserCardHorizontal key={user.id} user={user} />
-              ))}
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">
+                Thẻ người dùng ngang
+              </h2>
+              <div className="space-y-4">
+                {SAMPLE_DATA.users.map((user) => (
+                  <UserCardHorizontal key={user.id} user={user} />
+                ))}
+              </div>
             </div>
-          </div>
-        </TabsContent>
+          </TabsContent>
 
-        <TabsContent value="posts" className="space-y-8">
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Thẻ bài đăng cơ bản</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {SAMPLE_DATA.posts.map((post) => (
-                <PostCardBasic key={post.id} post={post} />
-              ))}
+          <TabsContent value="posts" className="space-y-8">
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">
+                Thẻ bài đăng cơ bản
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {SAMPLE_DATA.posts.map((post) => (
+                  <PostCardBasic key={post.id} post={post} />
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Thẻ bài đăng nổi bật</h2>
-            <div className="grid grid-cols-1 gap-6">
-              {SAMPLE_DATA.posts.slice(0, 1).map((post) => (
-                <PostCardFeatured key={post.id} post={post} />
-              ))}
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">
+                Thẻ bài đăng nổi bật
+              </h2>
+              <div className="grid grid-cols-1 gap-6">
+                {SAMPLE_DATA.posts.slice(0, 1).map((post) => (
+                  <PostCardFeatured key={post.id} post={post} />
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Thẻ bài đăng nhỏ gọn</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {SAMPLE_DATA.posts.map((post) => (
-                <PostCardCompact key={post.id} post={post} />
-              ))}
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">
+                Thẻ bài đăng nhỏ gọn
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {SAMPLE_DATA.posts.map((post) => (
+                  <PostCardCompact key={post.id} post={post} />
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Thẻ bài đăng ngang</h2>
-            <div className="space-y-4">
-              {SAMPLE_DATA.posts.map((post) => (
-                <PostCardHorizontal key={post.id} post={post} />
-              ))}
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">
+                Thẻ bài đăng ngang
+              </h2>
+              <div className="space-y-4">
+                {SAMPLE_DATA.posts.map((post) => (
+                  <PostCardHorizontal key={post.id} post={post} />
+                ))}
+              </div>
             </div>
-          </div>
-        </TabsContent>
+          </TabsContent>
 
-        <TabsContent value="playlists" className="space-y-8">
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Thẻ playlist cơ bản</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {SAMPLE_DATA.playlists.map((playlist) => (
-                <PlaylistCardBasic key={playlist.id} playlist={playlist} />
-              ))}
+          <TabsContent value="playlists" className="space-y-8">
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">
+                Thẻ playlist cơ bản
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {SAMPLE_DATA.playlists.map((playlist) => (
+                  <PlaylistCardBasic key={playlist.id} playlist={playlist} />
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Thẻ playlist nổi bật</h2>
-            <div className="grid grid-cols-1 gap-6">
-              {SAMPLE_DATA.playlists.slice(0, 1).map((playlist) => (
-                <PlaylistCardFeatured key={playlist.id} playlist={playlist} />
-              ))}
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">
+                Thẻ playlist nổi bật
+              </h2>
+              <div className="grid grid-cols-1 gap-6">
+                {SAMPLE_DATA.playlists.slice(0, 1).map((playlist) => (
+                  <PlaylistCardFeatured key={playlist.id} playlist={playlist} />
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Thẻ playlist nhỏ gọn</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {SAMPLE_DATA.playlists.map((playlist) => (
-                <PlaylistCardCompact key={playlist.id} playlist={playlist} />
-              ))}
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">
+                Thẻ playlist nhỏ gọn
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                {SAMPLE_DATA.playlists.map((playlist) => (
+                  <PlaylistCardCompact key={playlist.id} playlist={playlist} />
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Thẻ playlist ngang</h2>
-            <div className="space-y-4">
-              {SAMPLE_DATA.playlists.map((playlist) => (
-                <PlaylistCardHorizontal key={playlist.id} playlist={playlist} />
-              ))}
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">
+                Thẻ playlist ngang
+              </h2>
+              <div className="space-y-4">
+                {SAMPLE_DATA.playlists.map((playlist) => (
+                  <PlaylistCardHorizontal
+                    key={playlist.id}
+                    playlist={playlist}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        </TabsContent>
-      </Tabs>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
-  )
+  );
 }
 
 // USER CARDS
 
 interface UserCardProps {
-  user: (typeof SAMPLE_DATA.users)[0]
+  user: (typeof SAMPLE_DATA.users)[0];
 }
 
 // Thẻ người dùng cơ bản
@@ -386,7 +421,9 @@ function UserCardBasic({ user }: UserCardProps) {
         <div className="text-center mt-3">
           <div className="flex items-center justify-center gap-1">
             <h3 className="font-semibold text-lg">{user.name}</h3>
-            {user.verified && <CheckCircle2 className="h-4 w-4 text-blue-500 fill-blue-500" />}
+            {user.verified && (
+              <CheckCircle2 className="h-4 w-4 text-blue-500 fill-blue-500" />
+            )}
           </div>
           <p className="text-sm text-muted-foreground">{user.username}</p>
           <p className="text-sm mt-2 line-clamp-2">{user.bio}</p>
@@ -415,7 +452,7 @@ function UserCardBasic({ user }: UserCardProps) {
         </div>
       </div>
     </Card>
-  )
+  );
 }
 
 // Thẻ người dùng nổi bật
@@ -434,7 +471,9 @@ function UserCardFeatured({ user }: UserCardProps) {
           <div className="flex items-end gap-4">
             <Avatar className="h-24 w-24 border-4 border-white/20 rounded-xl shadow-lg">
               <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className="text-2xl">{user.name.charAt(0)}</AvatarFallback>
+              <AvatarFallback className="text-2xl">
+                {user.name.charAt(0)}
+              </AvatarFallback>
             </Avatar>
 
             <div className="flex-1">
@@ -456,7 +495,10 @@ function UserCardFeatured({ user }: UserCardProps) {
                 <UserPlus className="h-4 w-4 mr-2" />
                 Theo dõi
               </Button>
-              <Button variant="outline" className="rounded-xl border-white/20 bg-black/30 hover:bg-black/40">
+              <Button
+                variant="outline"
+                className="rounded-xl border-white/20 bg-black/30 hover:bg-black/40"
+              >
                 <MessageCircle className="h-4 w-4" />
               </Button>
             </div>
@@ -477,7 +519,10 @@ function UserCardFeatured({ user }: UserCardProps) {
               {user.website && (
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <Globe className="h-4 w-4" />
-                  <a href={`https://${user.website}`} className="text-primary hover:underline">
+                  <a
+                    href={`https://${user.website}`}
+                    className="text-primary hover:underline"
+                  >
                     {user.website}
                   </a>
                 </div>
@@ -487,11 +532,15 @@ function UserCardFeatured({ user }: UserCardProps) {
 
           <div className="flex gap-6 md:gap-8">
             <div className="text-center">
-              <p className="text-2xl font-bold">{user.followers.toLocaleString()}</p>
+              <p className="text-2xl font-bold">
+                {user.followers.toLocaleString()}
+              </p>
               <p className="text-muted-foreground">Người theo dõi</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold">{user.following.toLocaleString()}</p>
+              <p className="text-2xl font-bold">
+                {user.following.toLocaleString()}
+              </p>
               <p className="text-muted-foreground">Đang theo dõi</p>
             </div>
             <div className="text-center">
@@ -502,7 +551,7 @@ function UserCardFeatured({ user }: UserCardProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 // Thẻ người dùng nhỏ gọn
@@ -519,9 +568,13 @@ function UserCardCompact({ user }: UserCardProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1">
               <h3 className="font-medium text-sm truncate">{user.name}</h3>
-              {user.verified && <CheckCircle2 className="h-3 w-3 text-blue-500 flex-shrink-0" />}
+              {user.verified && (
+                <CheckCircle2 className="h-3 w-3 text-blue-500 flex-shrink-0" />
+              )}
             </div>
-            <p className="text-xs text-muted-foreground truncate">{user.username}</p>
+            <p className="text-xs text-muted-foreground truncate">
+              {user.username}
+            </p>
           </div>
 
           <Button size="sm" variant="outline" className="rounded-xl h-8">
@@ -530,7 +583,7 @@ function UserCardCompact({ user }: UserCardProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 // Thẻ người dùng ngang
@@ -540,7 +593,11 @@ function UserCardHorizontal({ user }: UserCardProps) {
       <div className="flex">
         <div className="w-1/4 md:w-1/5 relative">
           <div className="absolute inset-0">
-            <img src={user.avatar || "/placeholder.svg"} alt={user.name} className="w-full h-full object-cover" />
+            <img
+              src={user.avatar || "/placeholder.svg"}
+              alt={user.name}
+              className="w-full h-full object-cover"
+            />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20"></div>
           </div>
         </div>
@@ -551,25 +608,35 @@ function UserCardHorizontal({ user }: UserCardProps) {
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-lg">{user.name}</h3>
                 {user.verified && (
-                  <Badge variant="outline" className="h-5 bg-blue-500/10 text-blue-500 border-blue-500/20">
+                  <Badge
+                    variant="outline"
+                    className="h-5 bg-blue-500/10 text-blue-500 border-blue-500/20"
+                  >
                     <CheckCircle2 className="h-3 w-3 mr-1" />
                     Verified
                   </Badge>
                 )}
                 {user.featured && (
-                  <Badge variant="outline" className="h-5 bg-amber-500/10 text-amber-500 border-amber-500/20">
+                  <Badge
+                    variant="outline"
+                    className="h-5 bg-amber-500/10 text-amber-500 border-amber-500/20"
+                  >
                     <Star className="h-3 w-3 mr-1" />
                     Featured
                   </Badge>
                 )}
               </div>
               <p className="text-sm text-muted-foreground">{user.username}</p>
-              <p className="text-sm mt-2 line-clamp-1 md:line-clamp-2">{user.bio}</p>
+              <p className="text-sm mt-2 line-clamp-1 md:line-clamp-2">
+                {user.bio}
+              </p>
             </div>
 
             <div className="flex items-center gap-4 md:gap-6">
               <div className="text-center">
-                <p className="font-semibold">{user.followers.toLocaleString()}</p>
+                <p className="font-semibold">
+                  {user.followers.toLocaleString()}
+                </p>
                 <p className="text-xs text-muted-foreground">Followers</p>
               </div>
               <div className="text-center">
@@ -585,13 +652,13 @@ function UserCardHorizontal({ user }: UserCardProps) {
         </CardContent>
       </div>
     </Card>
-  )
+  );
 }
 
 // POST CARDS
 
 interface PostCardProps {
-  post: (typeof SAMPLE_DATA.posts)[0]
+  post: (typeof SAMPLE_DATA.posts)[0];
 }
 
 // Thẻ bài đăng cơ bản
@@ -599,9 +666,15 @@ function PostCardBasic({ post }: PostCardProps) {
   return (
     <Card className="overflow-hidden hover:shadow-md transition-all duration-300 rounded-xl">
       <div className="relative aspect-video">
-        <img src={post.image || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover" />
+        <img
+          src={post.image || "/placeholder.svg"}
+          alt={post.title}
+          className="w-full h-full object-cover"
+        />
         <div className="absolute top-2 left-2">
-          <Badge className={cn("text-white", post.color)}>{post.category}</Badge>
+          <Badge className={cn("text-white", post.color)}>
+            {post.category}
+          </Badge>
         </div>
 
         {post.type === "video" && (
@@ -632,12 +705,19 @@ function PostCardBasic({ post }: PostCardProps) {
         </div>
 
         <h3 className="font-semibold text-lg mb-2">{post.title}</h3>
-        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{post.excerpt}</p>
+        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+          {post.excerpt}
+        </p>
 
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1">
-              <Heart className={cn("h-4 w-4", post.saved && "fill-primary text-primary")} />
+              <Heart
+                className={cn(
+                  "h-4 w-4",
+                  post.saved && "fill-primary text-primary"
+                )}
+              />
               <span className="text-sm">{post.likes}</span>
             </div>
             <div className="flex items-center gap-1">
@@ -647,12 +727,17 @@ function PostCardBasic({ post }: PostCardProps) {
           </div>
 
           <Button variant="ghost" size="icon" className="rounded-xl">
-            <Bookmark className={cn("h-4 w-4", post.saved && "fill-primary text-primary")} />
+            <Bookmark
+              className={cn(
+                "h-4 w-4",
+                post.saved && "fill-primary text-primary"
+              )}
+            />
           </Button>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 // Thẻ bài đăng nổi bật
@@ -662,11 +747,17 @@ function PostCardFeatured({ post }: PostCardProps) {
       <div className="flex flex-col md:flex-row">
         <div className="md:w-2/3 relative">
           <div className="aspect-video md:aspect-auto md:h-full">
-            <img src={post.image || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover" />
+            <img
+              src={post.image || "/placeholder.svg"}
+              alt={post.title}
+              className="w-full h-full object-cover"
+            />
           </div>
 
           <div className="absolute top-4 left-4 flex gap-2">
-            <Badge className={cn("text-white", post.color)}>{post.category}</Badge>
+            <Badge className={cn("text-white", post.color)}>
+              {post.category}
+            </Badge>
             {post.featured && (
               <Badge className="bg-amber-500 text-white">
                 <Award className="h-3 w-3 mr-1" />
@@ -720,7 +811,12 @@ function PostCardFeatured({ post }: PostCardProps) {
           <div className="flex justify-between items-center mt-auto pt-4 border-t">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1">
-                <Heart className={cn("h-5 w-5", post.saved && "fill-primary text-primary")} />
+                <Heart
+                  className={cn(
+                    "h-5 w-5",
+                    post.saved && "fill-primary text-primary"
+                  )}
+                />
                 <span>{post.likes}</span>
               </div>
               <div className="flex items-center gap-1">
@@ -735,7 +831,12 @@ function PostCardFeatured({ post }: PostCardProps) {
 
             <div className="flex gap-2">
               <Button variant="ghost" size="icon" className="rounded-xl">
-                <Bookmark className={cn("h-5 w-5", post.saved && "fill-primary text-primary")} />
+                <Bookmark
+                  className={cn(
+                    "h-5 w-5",
+                    post.saved && "fill-primary text-primary"
+                  )}
+                />
               </Button>
               <Button variant="ghost" size="icon" className="rounded-xl">
                 <Share2 className="h-5 w-5" />
@@ -745,7 +846,7 @@ function PostCardFeatured({ post }: PostCardProps) {
         </CardContent>
       </div>
     </Card>
-  )
+  );
 }
 
 // Thẻ bài đăng nhỏ gọn
@@ -753,7 +854,11 @@ function PostCardCompact({ post }: PostCardProps) {
   return (
     <Card className="overflow-hidden hover:shadow-md transition-all duration-300 rounded-xl h-full">
       <div className="relative aspect-square">
-        <img src={post.image || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover" />
+        <img
+          src={post.image || "/placeholder.svg"}
+          alt={post.title}
+          className="w-full h-full object-cover"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
 
         {post.type === "video" && (
@@ -770,11 +875,15 @@ function PostCardCompact({ post }: PostCardProps) {
         )}
 
         <div className="absolute top-2 left-2">
-          <Badge className={cn("text-white", post.color)}>{post.category}</Badge>
+          <Badge className={cn("text-white", post.color)}>
+            {post.category}
+          </Badge>
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 p-3">
-          <h3 className="font-semibold text-white line-clamp-2 mb-1">{post.title}</h3>
+          <h3 className="font-semibold text-white line-clamp-2 mb-1">
+            {post.title}
+          </h3>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Avatar className="h-5 w-5">
@@ -784,14 +893,19 @@ function PostCardCompact({ post }: PostCardProps) {
               <span className="text-xs text-white/80">{post.author}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Heart className={cn("h-4 w-4 text-white", post.saved && "fill-primary")} />
+              <Heart
+                className={cn(
+                  "h-4 w-4 text-white",
+                  post.saved && "fill-primary"
+                )}
+              />
               <span className="text-xs text-white/80">{post.likes}</span>
             </div>
           </div>
         </div>
       </div>
     </Card>
-  )
+  );
 }
 
 // Thẻ bài đăng ngang
@@ -801,11 +915,17 @@ function PostCardHorizontal({ post }: PostCardProps) {
       <div className="flex flex-col sm:flex-row">
         <div className="sm:w-1/3 lg:w-1/4 relative">
           <div className="aspect-video sm:aspect-square h-full">
-            <img src={post.image || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover" />
+            <img
+              src={post.image || "/placeholder.svg"}
+              alt={post.title}
+              className="w-full h-full object-cover"
+            />
           </div>
 
           <div className="absolute top-2 left-2">
-            <Badge className={cn("text-white", post.color)}>{post.category}</Badge>
+            <Badge className={cn("text-white", post.color)}>
+              {post.category}
+            </Badge>
           </div>
 
           {post.type === "video" && (
@@ -833,18 +953,29 @@ function PostCardHorizontal({ post }: PostCardProps) {
             <span className="text-sm text-muted-foreground">{post.date}</span>
             <span className="text-sm text-muted-foreground">•</span>
             <span className="text-sm text-muted-foreground flex items-center gap-1">
-              {post.type === "video" ? <Play className="h-3 w-3" /> : <ImageIcon className="h-3 w-3" />}
+              {post.type === "video" ? (
+                <Play className="h-3 w-3" />
+              ) : (
+                <ImageIcon className="h-3 w-3" />
+              )}
               {post.type === "video" ? "Video" : "Hình ảnh"}
             </span>
           </div>
 
           <h3 className="font-semibold text-lg mb-2">{post.title}</h3>
-          <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{post.excerpt}</p>
+          <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+            {post.excerpt}
+          </p>
 
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1">
-                <Heart className={cn("h-4 w-4", post.saved && "fill-primary text-primary")} />
+                <Heart
+                  className={cn(
+                    "h-4 w-4",
+                    post.saved && "fill-primary text-primary"
+                  )}
+                />
                 <span className="text-sm">{post.likes}</span>
               </div>
               <div className="flex items-center gap-1">
@@ -858,13 +989,30 @@ function PostCardHorizontal({ post }: PostCardProps) {
             </div>
 
             <div className="flex gap-1">
-              <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8">
-                <Bookmark className={cn("h-4 w-4", post.saved && "fill-primary text-primary")} />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-xl h-8 w-8"
+              >
+                <Bookmark
+                  className={cn(
+                    "h-4 w-4",
+                    post.saved && "fill-primary text-primary"
+                  )}
+                />
               </Button>
-              <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-xl h-8 w-8"
+              >
                 <Share2 className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-xl h-8 w-8"
+              >
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </div>
@@ -872,13 +1020,13 @@ function PostCardHorizontal({ post }: PostCardProps) {
         </CardContent>
       </div>
     </Card>
-  )
+  );
 }
 
 // PLAYLIST CARDS
 
 interface PlaylistCardProps {
-  playlist: (typeof SAMPLE_DATA.playlists)[0]
+  playlist: (typeof SAMPLE_DATA.playlists)[0];
 }
 
 // Thẻ playlist cơ bản
@@ -887,9 +1035,16 @@ function PlaylistCardBasic({ playlist }: PlaylistCardProps) {
     <Card className="overflow-hidden hover:shadow-md transition-all duration-300 rounded-xl h-full">
       <div className="flex flex-col h-full">
         <div className="relative aspect-square">
-          <img src={playlist.cover || "/placeholder.svg"} alt={playlist.title} className="w-full h-full object-cover" />
+          <img
+            src={playlist.cover || "/placeholder.svg"}
+            alt={playlist.title}
+            className="w-full h-full object-cover"
+          />
           <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-            <Button size="icon" className="rounded-full h-12 w-12 bg-primary/90 hover:bg-primary">
+            <Button
+              size="icon"
+              className="rounded-full h-12 w-12 bg-primary/90 hover:bg-primary"
+            >
               <Play className="h-6 w-6 fill-white text-white" />
             </Button>
           </div>
@@ -910,13 +1065,20 @@ function PlaylistCardBasic({ playlist }: PlaylistCardProps) {
         </div>
 
         <CardContent className="p-4 flex-grow">
-          <h3 className="font-semibold text-lg line-clamp-1">{playlist.title}</h3>
-          <p className="text-sm text-muted-foreground line-clamp-2 mt-1 mb-3">{playlist.description}</p>
+          <h3 className="font-semibold text-lg line-clamp-1">
+            {playlist.title}
+          </h3>
+          <p className="text-sm text-muted-foreground line-clamp-2 mt-1 mb-3">
+            {playlist.description}
+          </p>
 
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Avatar className="h-6 w-6">
-                <AvatarImage src={playlist.authorAvatar} alt={playlist.author} />
+                <AvatarImage
+                  src={playlist.authorAvatar}
+                  alt={playlist.author}
+                />
                 <AvatarFallback>{playlist.author.charAt(0)}</AvatarFallback>
               </Avatar>
               <span>{playlist.author}</span>
@@ -929,7 +1091,7 @@ function PlaylistCardBasic({ playlist }: PlaylistCardProps) {
         </CardContent>
       </div>
     </Card>
-  )
+  );
 }
 
 // Thẻ playlist nổi bật
@@ -947,7 +1109,10 @@ function PlaylistCardFeatured({ playlist }: PlaylistCardProps) {
           </div>
 
           <div className="absolute inset-0 bg-gradient-to-br from-black/60 to-transparent flex items-center justify-center">
-            <Button size="icon" className="rounded-full h-16 w-16 bg-white/20 backdrop-blur-sm hover:bg-white/30">
+            <Button
+              size="icon"
+              className="rounded-full h-16 w-16 bg-white/20 backdrop-blur-sm hover:bg-white/30"
+            >
               <Play className="h-8 w-8 fill-white text-white ml-1" />
             </Button>
           </div>
@@ -973,16 +1138,24 @@ function PlaylistCardFeatured({ playlist }: PlaylistCardProps) {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={playlist.authorAvatar} alt={playlist.author} />
+                <AvatarImage
+                  src={playlist.authorAvatar}
+                  alt={playlist.author}
+                />
                 <AvatarFallback>{playlist.author.charAt(0)}</AvatarFallback>
               </Avatar>
               <div>
                 <div className="font-medium">{playlist.author}</div>
-                <div className="text-xs text-muted-foreground">Cập nhật {playlist.lastUpdated}</div>
+                <div className="text-xs text-muted-foreground">
+                  Cập nhật {playlist.lastUpdated}
+                </div>
               </div>
             </div>
 
-            <Badge variant="outline" className={cn("border-none", playlist.color)}>
+            <Badge
+              variant="outline"
+              className={cn("border-none", playlist.color)}
+            >
               <Headphones className="h-3 w-3 mr-1" />
               {playlist.plays.toLocaleString()} lượt nghe
             </Badge>
@@ -1011,7 +1184,9 @@ function PlaylistCardFeatured({ playlist }: PlaylistCardProps) {
               </div>
               <div className="flex items-center gap-1">
                 <User className="h-4 w-4" />
-                <span>{playlist.followers.toLocaleString()} người theo dõi</span>
+                <span>
+                  {playlist.followers.toLocaleString()} người theo dõi
+                </span>
               </div>
             </div>
           </div>
@@ -1032,7 +1207,7 @@ function PlaylistCardFeatured({ playlist }: PlaylistCardProps) {
         </CardContent>
       </div>
     </Card>
-  )
+  );
 }
 
 // Thẻ playlist nhỏ gọn
@@ -1041,7 +1216,11 @@ function PlaylistCardCompact({ playlist }: PlaylistCardProps) {
     <Card className="overflow-hidden hover:shadow-md transition-all duration-300 rounded-xl h-full">
       <div className="flex flex-col h-full">
         <div className="relative aspect-square">
-          <img src={playlist.cover || "/placeholder.svg"} alt={playlist.title} className="w-full h-full object-cover" />
+          <img
+            src={playlist.cover || "/placeholder.svg"}
+            alt={playlist.title}
+            className="w-full h-full object-cover"
+          />
           <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
             <Play className="h-8 w-8 text-white fill-white" />
           </div>
@@ -1060,7 +1239,7 @@ function PlaylistCardCompact({ playlist }: PlaylistCardProps) {
         </CardContent>
       </div>
     </Card>
-  )
+  );
 }
 
 // Thẻ playlist ngang
@@ -1069,7 +1248,11 @@ function PlaylistCardHorizontal({ playlist }: PlaylistCardProps) {
     <Card className="overflow-hidden hover:shadow-md transition-all duration-300 rounded-xl">
       <div className="flex">
         <div className="w-24 h-24 relative flex-shrink-0">
-          <img src={playlist.cover || "/placeholder.svg"} alt={playlist.title} className="w-full h-full object-cover" />
+          <img
+            src={playlist.cover || "/placeholder.svg"}
+            alt={playlist.title}
+            className="w-full h-full object-cover"
+          />
           <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
             <Play className="h-8 w-8 text-white fill-white" />
           </div>
@@ -1089,19 +1272,28 @@ function PlaylistCardHorizontal({ playlist }: PlaylistCardProps) {
             </Badge>
           </div>
 
-          <p className="text-xs text-muted-foreground line-clamp-1 mb-2">{playlist.description}</p>
+          <p className="text-xs text-muted-foreground line-clamp-1 mb-2">
+            {playlist.description}
+          </p>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
               <Avatar className="h-4 w-4">
-                <AvatarImage src={playlist.authorAvatar} alt={playlist.author} />
+                <AvatarImage
+                  src={playlist.authorAvatar}
+                  alt={playlist.author}
+                />
                 <AvatarFallback>{playlist.author.charAt(0)}</AvatarFallback>
               </Avatar>
               <span className="text-xs">{playlist.author}</span>
             </div>
 
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 rounded-full"
+              >
                 <MoreHorizontal className="h-3 w-3" />
               </Button>
             </div>
@@ -1109,7 +1301,7 @@ function PlaylistCardHorizontal({ playlist }: PlaylistCardProps) {
         </CardContent>
       </div>
     </Card>
-  )
+  );
 }
 
 // Utility component for Globe icon
@@ -1131,6 +1323,5 @@ function Globe(props: React.SVGProps<SVGSVGElement>) {
       <line x1="2" x2="22" y1="12" y2="12" />
       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
     </svg>
-  )
+  );
 }
-

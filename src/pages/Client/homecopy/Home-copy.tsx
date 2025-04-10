@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import PostMultiImg from "./home/Image";
-import Detail from "./home/Detail";
+import Detail from "./homecopy/Detail";
 import PostVideo from "./home/Video";
-import ActionBar from "./home/ActionBar";
+import ActionBar from "./homecopy/ActionBar";
 import { useToast } from "@/common/hooks/use-toast";
 import { getAxiosInstance } from "../../services/axios/axiosInstance";
 
@@ -53,30 +53,30 @@ const samplePostData: Post[] = [
     userId: "user1",
     postId: "post1",
     createdAt: "2025-04-01T10:00:00Z",
-    userAvatar: "https://example.com/avatar1.jpg",
+    userAvatar: "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
     userDisplayName: "John Doe",
     postType: "VIDEO",
-    videoUrl: "https://example.com/sample-video.mp4",
+    videoUrl: "v1740748142/videos/ku2ammahemr2k4iiezza.mp4",
     imageUrls: [],
     caption: "A cool video post!",
     likeCount: "120",
     commentCount: "15",
     playlistCount: "5",
-    audioUrl: "https://example.com/sample-audio.mp3",
-    audioOwnerAvatar: "https://example.com/audio-owner1.jpg",
+    audioUrl: "",
+    audioOwnerAvatar: "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
     audioOwnerName: "Audio Creator",
     audioId: "audio1",
     comments: [
       {
         commentId: "cmt1",
-        userAvatar: "https://example.com/user2.jpg",
+        userAvatar: "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
         content: "Great video!",
         displayName: "Jane Smith",
         createdAt: "2025-04-01T10:05:00Z",
         replies: [
           {
             commentId: "reply1",
-            userAvatar: "https://example.com/user1.jpg",
+            userAvatar: "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
             content: "Thanks!",
             displayName: "John Doe",
             createdAt: "2025-04-01T10:06:00Z",
@@ -89,26 +89,27 @@ const samplePostData: Post[] = [
     userId: "user2",
     postId: "post2",
     createdAt: "2025-04-02T15:00:00Z",
-    userAvatar: "https://example.com/avatar2.jpg",
+    userAvatar: "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
     userDisplayName: "Jane Smith",
     postType: "IMG",
     videoUrl: "",
     imageUrls: [
-      "https://example.com/image1.jpg",
-      "https://example.com/image2.jpg",
+      "images/sikxb1qmpocwuwpbgapc",
+      "images/sikxb1qmpocwuwpbgapc",
+      "images/sikxb1qmpocwuwpbgapc",
     ],
     caption: "Some beautiful photos!",
     likeCount: "85",
     commentCount: "10",
     playlistCount: "3",
-    audioUrl: "https://example.com/sample-audio2.mp3",
-    audioOwnerAvatar: "https://example.com/audio-owner2.jpg",
+    audioUrl: "audios/t0m4l8rgcrrtbdbxnanp.mp3",
+    audioOwnerAvatar: "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
     audioOwnerName: "Music Maker",
     audioId: "audio2",
     comments: [
       {
         commentId: "cmt2",
-        userAvatar: "https://example.com/user3.jpg",
+        userAvatar: "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
         content: "Love these pics!",
         displayName: "Alex Brown",
         createdAt: "2025-04-02T15:10:00Z",

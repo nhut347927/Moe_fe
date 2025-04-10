@@ -1,48 +1,24 @@
-import { ReactNode, useState } from "react";
-import { Maximize, Minimize } from "lucide-react";
-import Header from "../components/layouts/Client/Header";
-import SliderBar from "../components/layouts/Client/SliderBar";
+import { ReactNode } from "react";
+import Header from "./Client/Header";
+import SliderBar from "./Client/SliderBar";
 import { Toaster } from "@/components/ui/toaster";
+import { useAppSelector } from "@/store/hooks";
 
 const ClientLayout = ({ children }: { children: ReactNode }) => {
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-  const enterFullscreen = () => {
-    document.documentElement.requestFullscreen();
-    setIsFullscreen(true);
-  };
-
-  const exitFullscreen = () => {
-    document.exitFullscreen();
-    setIsFullscreen(false);
-  };
-
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      enterFullscreen();
-    } else {
-      exitFullscreen();
-    }
-  };
+  const backgroundUrl = useAppSelector((state) => state.background.imageUrl);
 
   return (
-    <div className="relative w-full h-screen flex">
-      <button
-        type="button"
-        className="absolute bottom-2 right-2 p-2 z-50"
-        onClick={toggleFullscreen}
-        aria-label="Toggle Fullscreen"
-      >
-        {isFullscreen ? (
-          <Minimize className="w-6 h-6" />
-        ) : (
-          <Maximize className="w-6 h-6" />
-        )}
-      </button>
-      <Toaster />
-      <div className="flex w-full h-full overflow-hidden">
-        <SliderBar />
+    <div className="relative flex w-full h-screen bg-white dark:bg-zinc-950 overflow-hidden">
+      {/* Background Layer */}
+      <div
+        className="fixed top-0 left-0 w-full h-full bg-cover bg-center blur-xl opacity-50"
+        style={{ backgroundImage: `url(${backgroundUrl})` }}
+      />
 
+      {/* UI Layer */}
+      <Toaster />
+      <div className="flex w-full h-full overflow-hidden relative z-10">
+        <SliderBar />
         <main className="flex-1 flex flex-col">
           <Header />
           {children}
