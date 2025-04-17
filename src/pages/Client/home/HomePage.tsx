@@ -22,283 +22,8 @@ import {
 import { useToast } from "@/common/hooks/use-toast";
 import { getAxiosInstance } from "../../../services/axios/axiosInstance";
 import { Link } from "react-router-dom";
-
-// Định nghĩa types
-type Reply = {
-  commentId: string;
-  userAvatar: string;
-  content: string;
-  displayName: string;
-  createdAt: string;
-};
-
-type Comment = {
-  commentId: string;
-  userAvatar: string;
-  content: string;
-  displayName: string;
-  createdAt: string;
-  replies: Reply[];
-};
-
-type Post = {
-  userId: string;
-  postId: string;
-  createdAt: string;
-  userAvatar: string;
-  userDisplayName: string;
-  userName: string;
-  postType: "VIDEO" | "IMG";
-  videoUrl: string;
-  imageUrls: string[];
-  title: string;
-  description: string;
-  likeCount: string;
-  commentCount: string;
-  playlistCount: string;
-  audioUrl: string;
-  audioOwnerAvatar: string;
-  audioOwnerName: string;
-  audioId: string;
-  comments: Comment[];
-};
-
-// Dữ liệu mẫu (đã sửa postId trùng lặp)
-const samplePostData: Post[] = [
-  {
-    userId: "user1",
-    postId: "post1",
-    createdAt: "2025-04-01T10:00:00Z",
-    userAvatar:
-      "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-    userDisplayName: "John Doe",
-    userName: "johndoe",
-    postType: "VIDEO",
-    videoUrl:
-      "https://res.cloudinary.com/dwv76nhoy/video/upload/v1740748142/videos/ku2ammahemr2k4iiezza.mp4",
-    imageUrls: [],
-    title: "A cool video post!",
-    description: "Cái này là một video rất hay!",
-    likeCount: "120",
-    commentCount: "15",
-    playlistCount: "5",
-    audioUrl: "",
-    audioOwnerAvatar:
-      "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-    audioOwnerName: "Audio Creator",
-    audioId: "audio1",
-    comments: [
-      {
-        commentId: "cmt1",
-        userAvatar:
-          "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-        content: "Great video!",
-        displayName: "Jane Smith",
-        createdAt: "2025-04-01T10:05:00Z",
-        replies: [
-          {
-            commentId: "reply1",
-            userAvatar:
-              "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-            content: "Thanks!",
-            displayName: "John Doe",
-            createdAt: "2025-04-01T10:06:00Z",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    userId: "user2",
-    postId: "post2",
-    createdAt: "2025-04-02T15:00:00Z",
-    userAvatar:
-      "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-    userDisplayName: "Jane Smith",
-    userName: "johndoe",
-    postType: "IMG",
-    videoUrl: "",
-    imageUrls: [
-      "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/images/sikxb1qmpocwuwpbgapc",
-      "https://res.cloudinary.com/dwv76nhoy/image/upload/c_crop,g_auto,w_1080/v1739337151/rrspasosi59xmsriilae.png",
-      "https://res.cloudinary.com/dwv76nhoy/image/upload/c_crop,g_auto,w_1080/v1739337151/images/sikxb1qmpocwuwpbgapc",
-    ],
-    title: "Beautiful photos!",
-    description: "Check out these amazing pics!",
-    likeCount: "85",
-    commentCount: "10",
-    playlistCount: "3",
-    audioUrl:
-      "https://res.cloudinary.com/dwv76nhoy/video/upload/v1741011150/audios/t0m4l8rgcrrtbdbxnanp.mp3",
-    audioOwnerAvatar:
-      "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-    audioOwnerName: "Music Maker",
-    audioId: "audio2",
-    comments: [
-      {
-        commentId: "cmt2",
-        userAvatar:
-          "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-        content: "Love these pics!",
-        displayName: "Alex Brown",
-        createdAt: "2025-04-02T15:10:00Z",
-        replies: [],
-      },
-    ],
-  },
-  {
-    userId: "user1",
-    postId: "post3",
-    createdAt: "2025-04-01T10:00:00Z",
-    userAvatar:
-      "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-    userDisplayName: "John Doe",
-    userName: "johndoe",
-    postType: "VIDEO",
-    videoUrl:
-      "https://res.cloudinary.com/dwv76nhoy/video/upload/v1740748437/videos/wnz7qmx8ioch6e3zvylv.mp4",
-    imageUrls: [],
-    title: "A cool video post!",
-    description: "Cái này là một video rất hay!",
-    likeCount: "120",
-    commentCount: "15",
-    playlistCount: "5",
-    audioUrl: "",
-    audioOwnerAvatar:
-      "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-    audioOwnerName: "Audio Creator",
-    audioId: "audio1",
-    comments: [
-      {
-        commentId: "cmt1",
-        userAvatar:
-          "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-        content: "Great video!",
-        displayName: "Jane Smith",
-        createdAt: "2025-04-01T10:05:00Z",
-        replies: [
-          {
-            commentId: "reply1",
-            userAvatar:
-              "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-            content: "Thanks!",
-            displayName: "John Doe",
-            createdAt: "2025-04-01T10:06:00Z",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    userId: "user1",
-    postId: "post4",
-    createdAt: "2025-04-01T10:00:00Z",
-    userAvatar:
-      "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-    userDisplayName: "John Doe",
-    userName: "johndoe",
-    postType: "VIDEO",
-    videoUrl:
-      "https://res.cloudinary.com/dwv76nhoy/video/upload/v1740670978/videos/jjot1n9nnbpkxuin2gcv.mp4",
-    imageUrls: [],
-    title: "A cool video post!",
-    description: "Cái này là một video rất hay!",
-    likeCount: "120",
-    commentCount: "15",
-    playlistCount: "5",
-    audioUrl: "",
-    audioOwnerAvatar:
-      "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-    audioOwnerName: "Audio Creator",
-    audioId: "audio1",
-    comments: [
-      {
-        commentId: "cmt1",
-        userAvatar:
-          "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-        content: "Great video!",
-        displayName: "Jane Smith",
-        createdAt: "2025-04-01T10:05:00Z",
-        replies: [
-          {
-            commentId: "reply1",
-            userAvatar:
-              "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-            content: "Thanks!",
-            displayName: "John Doe",
-            createdAt: "2025-04-01T10:06:00Z",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    userId: "user1",
-    postId: "post5",
-    createdAt: "2025-04-01T10:00:00Z",
-    userAvatar:
-      "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-    userDisplayName: "John Doe",
-    userName: "johndoe",
-    postType: "VIDEO",
-    videoUrl:
-      "https://res.cloudinary.com/dwv76nhoy/video/upload/v1740748142/videos/ku2ammahemr2k4iiezza.mp4",
-    imageUrls: [],
-    title: "A cool video post!",
-    description: "Cái này là một video rất hay!",
-    likeCount: "120",
-    commentCount: "15",
-    playlistCount: "5",
-    audioUrl: "",
-    audioOwnerAvatar:
-      "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-    audioOwnerName: "Audio Creator",
-    audioId: "audio1",
-    comments: [
-      {
-        commentId: "cmt1",
-        userAvatar:
-          "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-        content: "Great video!",
-        displayName: "Jane Smith",
-        createdAt: "2025-04-01T10:05:00Z",
-        replies: [
-          {
-            commentId: "reply1",
-            userAvatar:
-              "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-            content: "Thanks!",
-            displayName: "John Doe",
-            createdAt: "2025-04-01T10:06:00Z",
-          },
-        ],
-      },
-    ],
-  },
-];
-
-const commonEmojis = [
-  "😊",
-  "😂",
-  "❤️",
-  "👍",
-  "🔥",
-  "✨",
-  "🙌",
-  "👏",
-  "🎉",
-  "🤔",
-  "😍",
-  "🥰",
-  "😎",
-  "🤩",
-  "👀",
-  "💯",
-  "🙏",
-  "💪",
-  "👌",
-  "😢",
-];
+import { samplePostData } from "./data";
+import { Post, Comment, commonEmojis, LayoutType } from "./types";
 
 const Home = () => {
   const videoRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -323,6 +48,7 @@ const Home = () => {
   const [showCommentsHint, setShowCommentsHint] = useState(true);
   const contentRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const commentsRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [layout, setLayout] = useState<LayoutType>("masonry");
 
   useEffect(() => {
     setIsVisible(true);
@@ -519,11 +245,10 @@ const Home = () => {
         {postData.map((post, index) => (
           <div
             key={post.postId}
-            className="w-full max-h-screen h-screen  flex items-center justify-center"
+            className="w-full max-h-screen h-screen flex items-center justify-center"
           >
             <div className="flex h-full w-full">
               <div className="w-full m-14 bg-white/50 dark:bg-zinc-800/70 rounded-3xl shadow-2xl overflow-hidden relative flex items-center justify-center">
-             
                 <div className="relative z-10 w-full h-full flex flex-col md:flex-row items-center justify-center p-4 md:p-8 gap-6 md:gap-12">
                   <div
                     className={cn(
@@ -663,7 +388,7 @@ const Home = () => {
                               </p>
                             )}
                           </div>
-                          <div className="transition-all duration-500 ease-in-out mt-8 sticky bottom-0  backdrop-blur-sm pt-4 pb-2 -mx-4 px-4 border-t transform translate-y-0">
+                          <div className="transition-all duration-500 ease-in-out mt-8 sticky bottom-0 backdrop-blur-sm pt-4 pb-2 -mx-4 px-4 border-t transform translate-y-0">
                             <div className="flex gap-2 items-center">
                               <Popover>
                                 <PopoverTrigger asChild>
@@ -709,7 +434,7 @@ const Home = () => {
                               <Button
                                 onClick={() => handleAddComment(post.postId)}
                                 disabled={!newComment.trim()}
-                                className="px-4 bg-zinc-50 "
+                                className="px-4 bg-zinc-50"
                               >
                                 <Send className="h-4 w-4 text-zinc-500" />
                               </Button>
