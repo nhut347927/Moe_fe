@@ -1,29 +1,30 @@
 import { useState, useRef, useEffect } from "react";
-import PostMultiImg from "./Image";
-import PostVideo from "./Video";
-import {
-  Heart,
-  MessageCircle,
-  Bookmark,
-  Send,
-  ChevronDown,
-  Smile,
-} from "lucide-react";
-import { cn, getTimeAgo } from "@/common/utils/utils";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { useToast } from "@/common/hooks/use-toast";
 import { getAxiosInstance } from "../../../services/axios/axiosInstance";
-import { Link } from "react-router-dom";
 import { samplePostData } from "./data";
-import { Post, Comment, commonEmojis, LayoutType } from "./types";
+import { Post, Comment, PostType } from "./types";
+import PostItem from "./item/PostItem";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Blend,
+  Clock,
+  Earth,
+  Grid3X3,
+  Layout,
+  LayoutGrid,
+  Newspaper,
+  Proportions,
+  Rows,
+  User,
+  Users,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Home = () => {
   const videoRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -37,8 +38,6 @@ const Home = () => {
   const [postData, setPostData] = useState<Post[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-
-  // State cho comments của từng post
   const [commentsByPost, setCommentsByPost] = useState<
     Record<string, Comment[]>
   >({});
@@ -48,8 +47,10 @@ const Home = () => {
   const [showCommentsHint, setShowCommentsHint] = useState(true);
   const contentRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const commentsRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const [layout, setLayout] = useState<LayoutType>("masonry");
-
+  const [postType, setPostType] = useState<PostType>("feed");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]); // ✅
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isSorted, setIsSorted] = useState(true); // Trạng thái để kiểm tra chế độ sắp xếp
   useEffect(() => {
     setIsVisible(true);
     const timer = setTimeout(() => setShowDetails(true), 600);
@@ -59,19 +60,12 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Uncomment để gọi API thực tế
-        // const response = await axiosInstance.get("/post/get-post");
-        // setPostData(response.data.data);
         setPostData(samplePostData);
-
-        // Khởi tạo comments cho từng post
         const initialComments = samplePostData.reduce((acc, post) => {
           acc[post.postId] = post.comments;
           return acc;
         }, {} as Record<string, Comment[]>);
         setCommentsByPost(initialComments);
-
-        // Khởi tạo audio states
         const initialAudioStates = samplePostData.reduce((acc, _, index) => {
           acc[index] = { isPlaying: index === 0, isMuted: index !== 0 };
           return acc;
@@ -142,7 +136,6 @@ const Home = () => {
       const videoContainer = document.getElementById("video-container");
       const targetElement = event.target as HTMLElement;
 
-      // ⛔ Nếu phần tử hoặc cha của nó có data-scroll-ignore thì bỏ qua
       let el: HTMLElement | null = targetElement;
       while (el && el !== videoContainer) {
         if (el.hasAttribute("data-scroll-ignore")) return;
@@ -151,7 +144,6 @@ const Home = () => {
 
       event.preventDefault();
 
-      // Giới hạn số lần gọi hàm xử lý cuộn (throttle)
       const now = Date.now();
       if (now - lastScrollTime.current < 300) return;
 
@@ -185,7 +177,6 @@ const Home = () => {
       lastScrollTime.current = now;
     };
 
-    // ✅ Throttle ở đây
     const throttledHandleScroll = throttle(handleScroll, 150);
 
     window.addEventListener("wheel", throttledHandleScroll, { passive: false });
@@ -209,9 +200,9 @@ const Home = () => {
     const newCommentObj: Comment = {
       commentId: `cmt-${Date.now()}`,
       userAvatar:
-        "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png", // Thay bằng avatar người dùng thực tế
+        "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
       content: newComment,
-      displayName: "Current User", // Thay bằng tên người dùng thực tế
+      displayName: "Current User",
       createdAt: new Date().toISOString(),
       replies: [],
     };
@@ -236,246 +227,203 @@ const Home = () => {
     );
   }
 
+  const allTags: string[] = [
+    "Chill",
+    "Sad",
+    "Happy",
+    "Love",
+    "Rap",
+    "Indie",
+    "EDM",
+    "Ballad",
+    "Pop",
+    "Lo-fi",
+    "Workout",
+    "Jazz",
+    "Acoustic",
+  ];
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+    // TODO: Gọi hàm lọc bài viết dựa trên `selectedTags` nếu cần
+  };
+
+  // Hàm lọc các tag theo từ khóa tìm kiếm
+  const filteredTags = allTags.filter((tag) =>
+    tag.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Nếu chế độ sắp xếp được bật, ưu tiên các tag đã chọn lên trên, sau đó sắp xếp các tag còn lại theo tên
+  const tagsToDisplay = isSorted
+    ? [
+        // Đưa các tag đã chọn lên trên
+        ...filteredTags.filter((tag) => selectedTags.includes(tag)),
+        // Sau đó là các tag chưa chọn, sắp xếp theo tên
+        ...filteredTags.filter((tag) => !selectedTags.includes(tag)).sort(),
+      ]
+    : filteredTags; // Nếu không sắp xếp, hiển thị theo thứ tự ban đầu
+
   return (
-    <div className="max-h-screen p-2">
+    <div className="max-h-screen p-2 relative">
+      <div className="absolute z-30 w-full">
+        <div className="flex flex-wrap gap-2 justify-center">
+          <Tabs
+            value={postType}
+            onValueChange={(value) => setPostType(value as PostType)}
+            className="w-auto"
+          >
+            <TabsList className="bg-muted/70 shadow-2xl">
+              <TabsTrigger
+                value="feed"
+                className="data-[state=active]:bg-background rounded-xl"
+              >
+                <Earth className="h-4 w-4 mr-1" />
+                <span className="sr-only sm:not-sr-only sm:inline-block">
+                  Feed
+                </span>
+              </TabsTrigger>
+
+              <TabsTrigger
+                value="personal"
+                className="data-[state=active]:bg-background rounded-xl"
+              >
+                <User className="h-4 w-4 mr-1" />
+                <span className="sr-only sm:not-sr-only sm:inline-block">
+                  Personal
+                </span>
+              </TabsTrigger>
+
+              <TabsTrigger
+                value="friends"
+                className="data-[state=active]:bg-background rounded-xl"
+              >
+                <Users className="h-4 w-4 mr-1" />
+                <span className="sr-only sm:not-sr-only sm:inline-block">
+                  Friends
+                </span>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <Button
+            variant="outline"
+            className="px-4 flex items-center gap-1 rounded-xl"
+          >
+            <Proportions className="h-4 w-4 mr-1" />
+            <span className="sr-only sm:not-sr-only sm:inline-block">
+              27/33
+            </span>
+          </Button>
+          {postType === "personal" && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="px-4 flex items-center gap-1 rounded-xl"
+                >
+                  <Blend className="h-4 w-4 mr-1" />
+                  <span className="sr-only sm:not-sr-only sm:inline-block">
+                    Filter tags
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                className="overflow-hidden bg-muted/90 rounded-3xl mt-2"
+                align="start"
+              >
+                <ScrollArea
+                  className="w-[300px] h-[300px] p-4 pt-0 space-y-3"
+                  data-scroll-ignore
+                >
+                  {/* Tiêu đề + mô tả */}
+                  <div className="space-y-1">
+                    <h4 className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
+                      Filter by Tags
+                    </h4>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                      Select one or more tags to personalize the feed.
+                    </p>
+                  </div>
+
+                  {/* Ô tìm kiếm */}
+                  <div className="relative p-1">
+                    <input
+                      type="text"
+                      placeholder="Search tags..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:bg-zinc-800 dark:text-zinc-200"
+                    />
+                  </div>
+
+                  {/* Chế độ sắp xếp */}
+                  <div className="flex items-center mb-2">
+                    <span className="text-sm text-zinc-600 dark:text-zinc-300 mr-2">
+                      Sort Tags
+                    </span>
+                    <button
+                      onClick={() => setIsSorted(!isSorted)}
+                      className="flex items-center gap-2 px-3 py-1 text-sm font-medium text-zinc-700 dark:text-zinc-200 rounded-full border border-zinc-300 dark:border-zinc-600 transition-all duration-200 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    >
+                      <span className="text-base">↕</span>
+                      {isSorted ? "Unsort" : "Sort"}
+                    </button>
+                  </div>
+
+                  {/* Các Tag */}
+                  <div className="flex flex-wrap gap-2 mb-9">
+                    {tagsToDisplay.map((tag) => {
+                      const isSelected = selectedTags.includes(tag);
+                      return (
+                        <button
+                          key={tag}
+                          onClick={() => toggleTag(tag)}
+                          className={`px-3 py-1 rounded-full text-sm transition-all duration-200 border whitespace-nowrap
+                  ${
+                    isSelected
+                      ? "bg-black text-white border-zinc-900 dark:bg-white dark:text-black dark:border-zinc-600"
+                      : "bg-zinc-200 text-zinc-700 hover:bg-zinc-300 border-zinc-300 dark:bg-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-600 dark:border-zinc-600"
+                  }
+                `}
+                        >
+                          #{tag}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
+      </div>
       <div
         id="video-container"
         className="h-full rounded-3xl overflow-y-auto overflow-x-hidden scroll-but-hidden"
       >
         {postData.map((post, index) => (
-          <div
+          <PostItem
             key={post.postId}
-            className="w-full max-h-screen h-screen flex items-center justify-center"
-          >
-            <div className="flex h-full w-full">
-              <div className="w-full m-14 bg-white/50 dark:bg-zinc-800/70 rounded-3xl shadow-2xl overflow-hidden relative flex items-center justify-center">
-                <div className="relative z-10 w-full h-full flex flex-col md:flex-row items-center justify-center p-4 md:p-8 gap-6 md:gap-12">
-                  <div
-                    className={cn(
-                      "w-full md:w-3/5 h-[50vh] md:h-[78vh] rounded-3xl overflow-hidden shadow-2xl transition-all duration-1000 transform",
-                      isVisible
-                        ? "translate-y-0 opacity-100"
-                        : "translate-y-20 opacity-0"
-                    )}
-                  >
-                    <div
-                      ref={(el) => (videoRefs.current[index] = el)}
-                      className="h-full"
-                    >
-                      {post.postType === "VIDEO" ? (
-                        <PostVideo
-                          videoSrc={post.videoUrl}
-                          initialMuted={audioStates[index]?.isMuted ?? true}
-                          initialPlaying={
-                            audioStates[index]?.isPlaying ?? false
-                          }
-                        />
-                      ) : (
-                        <PostMultiImg
-                          images={post.imageUrls}
-                          audioSrc={post.audioUrl}
-                          initialMuted={audioStates[index]?.isMuted ?? true}
-                          initialPlaying={
-                            audioStates[index]?.isPlaying ?? false
-                          }
-                        />
-                      )}
-                    </div>
-                  </div>
-
-                  <div
-                    className={cn(
-                      "w-full md:w-2/5 h-[50vh] md:h-[78vh] flex flex-col transition-all duration-1000 delay-300 transform",
-                      showDetails
-                        ? "translate-x-0 opacity-100"
-                        : "translate-x-20 opacity-0"
-                    )}
-                    data-scroll-ignore
-                  >
-                    <ScrollArea
-                      className="flex-1 pr-4"
-                      ref={(el) => (contentRefs.current[post.postId] = el)}
-                    >
-                      <div className="space-y-6 pb-32">
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-3">
-                            <Avatar>
-                              <AvatarImage src={post.userAvatar} />
-                              <AvatarFallback>
-                                {post.userDisplayName.charAt(0)}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <h3 className="flex items-center space-x-1">
-                                <span className="font-semibold text-[15px] text-zinc-800 dark:text-zinc-50">
-                                  {post.userDisplayName}
-                                </span>
-                                <span className="text-zinc-400 text-sm">•</span>
-                                <Link
-                                  to={"/client/profile"}
-                                  className="text-zinc-500 text-sm hover:underline hover:text-zinc-800 dark:text-zinc-300 dark:hover:text-zinc-50"
-                                >
-                                  @{post.userName}
-                                </Link>
-                              </h3>
-
-                              <p className="text-xs text-muted-foreground">
-                                {getTimeAgo(post.createdAt)}
-                              </p>
-                            </div>
-                          </div>
-                          <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                            {post.title}
-                          </h2>
-                        </div>
-                        <div className="min-h-[370px]">
-                          <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-                            {post.description}
-                          </p>
-                        </div>
-                        {showCommentsHint &&
-                          commentsByPost[post.postId]?.length > 0 && (
-                            <div
-                              className="flex flex-col items-center justify-center py-6 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
-                              onClick={() => scrollToComments(post.postId)}
-                            >
-                              <p className="text-sm font-medium">
-                                View {commentsByPost[post.postId].length}{" "}
-                                comments
-                              </p>
-                              <ChevronDown className="h-5 w-5 mt-1 animate-bounce" />
-                            </div>
-                          )}
-                        <div
-                          ref={(el) => (commentsRefs.current[post.postId] = el)}
-                          className="pt-10 mt-10 border-t"
-                        >
-                          <h3 className="font-medium mb-6">
-                            Comments ({commentsByPost[post.postId]?.length || 0}
-                            )
-                          </h3>
-                          <div className="space-y-6">
-                            {commentsByPost[post.postId]?.length > 0 ? (
-                              commentsByPost[post.postId].map((comment) => (
-                                <div
-                                  key={comment.commentId}
-                                  className="flex gap-3"
-                                >
-                                  <Avatar className="h-8 w-8">
-                                    <AvatarImage src={comment.userAvatar} />
-                                    <AvatarFallback>
-                                      {comment.displayName.charAt(0)}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <div className="flex-1">
-                                    <div className="flex items-center gap-2">
-                                      <span className="font-medium text-sm">
-                                        {comment.displayName}
-                                      </span>
-                                      <span className="text-xs text-muted-foreground">
-                                        {comment.createdAt}
-                                      </span>
-                                    </div>
-                                    <p className="text-sm mt-1">
-                                      {comment.content}
-                                    </p>
-                                  </div>
-                                </div>
-                              ))
-                            ) : (
-                              <p className="text-sm text-muted-foreground text-center py-4">
-                                No comments yet. Be the first to comment!
-                              </p>
-                            )}
-                          </div>
-                          <div className="transition-all duration-500 ease-in-out mt-8 sticky bottom-0 backdrop-blur-sm pt-4 pb-2 -mx-4 px-4 border-t transform translate-y-0">
-                            <div className="flex gap-2 items-center">
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-9 w-9"
-                                  >
-                                    <Smile className="h-5 w-5 text-muted-foreground" />
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                  className="w-64 p-2"
-                                  align="start"
-                                >
-                                  <div className="grid grid-cols-5 gap-2">
-                                    {commonEmojis.map((emoji, idx) => (
-                                      <Button
-                                        key={idx}
-                                        variant="ghost"
-                                        className="h-9 w-9 p-0 text-lg"
-                                        onClick={() => addEmoji(emoji)}
-                                      >
-                                        {emoji}
-                                      </Button>
-                                    ))}
-                                  </div>
-                                </PopoverContent>
-                              </Popover>
-                              <Input
-                                placeholder="Add a comment..."
-                                value={
-                                  activePostId === post.postId ? newComment : ""
-                                }
-                                onChange={(e) => setNewComment(e.target.value)}
-                                onFocus={() => setActivePostId(post.postId)}
-                                className="flex-1"
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter")
-                                    handleAddComment(post.postId);
-                                }}
-                              />
-                              <Button
-                                onClick={() => handleAddComment(post.postId)}
-                                disabled={!newComment.trim()}
-                                className="px-4 bg-zinc-50"
-                              >
-                                <Send className="h-4 w-4 text-zinc-500" />
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </ScrollArea>
-                    <div className="border-t pt-4 mt-2 backdrop-blur-sm">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center gap-2 px-2"
-                          >
-                            <Heart className="h-7 w-7" />
-                            <span>{post.likeCount}</span>
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="flex items-center gap-2 px-2"
-                            onClick={() => scrollToComments(post.postId)}
-                          >
-                            <MessageCircle className="h-5 w-5" />
-                            <span>
-                              {commentsByPost[post.postId]?.length || 0}
-                            </span>
-                          </Button>
-                        </div>
-                        <Button variant="ghost" size="sm" className="px-2">
-                          <Bookmark className="h-5 w-5" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+            post={post}
+            index={index}
+            videoRefs={videoRefs}
+            audioStates={audioStates}
+            isVisible={isVisible}
+            showDetails={showDetails}
+            commentsByPost={commentsByPost}
+            contentRefs={contentRefs}
+            commentsRefs={commentsRefs}
+            showCommentsHint={showCommentsHint}
+            scrollToComments={scrollToComments}
+            newComment={newComment}
+            activePostId={activePostId}
+            setActivePostId={setActivePostId}
+            setNewComment={setNewComment}
+            handleAddComment={handleAddComment}
+            addEmoji={addEmoji}
+          />
         ))}
       </div>
     </div>

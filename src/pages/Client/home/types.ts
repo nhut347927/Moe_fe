@@ -28,6 +28,7 @@ export type Post = {
   imageUrls: string[];
   title: string;
   description: string;
+  tags:string[];
   likeCount: string;
   commentCount: string;
   playlistCount: string;
@@ -38,7 +39,7 @@ export type Post = {
   comments: Comment[];
 };
 
-export type LayoutType = "masonry" | "grid" | "list" | "timeline";
+export type PostType = "feed" | "personal" | "friends";
 
 export const commonEmojis = [
   "😊",
