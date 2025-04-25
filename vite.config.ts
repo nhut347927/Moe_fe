@@ -1,7 +1,6 @@
 import path from "path";
 import react from '@vitejs/plugin-react-swc'; // Đảm bảo cài đúng plugin này
 import { defineConfig } from "vite";
-import fs from 'fs';
 
 export default defineConfig({
   plugins: [react()],

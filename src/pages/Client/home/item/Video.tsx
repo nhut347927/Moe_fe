@@ -153,7 +153,7 @@ import React, {
               loop
               playsInline
             />
-            <div className="absolute inset-0 flex flex-col justify-between opacity-0 hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70  flex flex-col justify-between opacity-0 hover:opacity-100 transition-opacity duration-300">
               <div className="flex-1 flex items-center justify-center">
                 <button onClick={togglePlay} aria-label={isPlaying ? "Pause video" : "Play video"}>
                   {isPlaying ? <Pause size={48} className="text-white" /> : <Play size={48} className="text-white" />}

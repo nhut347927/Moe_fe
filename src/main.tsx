@@ -4,7 +4,7 @@ import { StrictMode } from 'react';
 import { Provider } from 'react-redux';
 import App from './App';
 import { store } from './store/store';
-import { FilterProvider } from './common/context/FilterContext';
+import { FilterProvider } from './common/context/filter-context';
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 

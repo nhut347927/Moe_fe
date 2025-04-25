@@ -1,5 +1,5 @@
 import { AxiosError, AxiosRequestConfig } from "axios";
-import { getAxiosInstance } from "./axiosInstance";
+import { getAxiosInstance } from "./axios-instance";
 
 const axiosInstance = getAxiosInstance();
 

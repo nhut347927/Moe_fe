@@ -1,2 +1,2 @@
-export { default as backgroundReducer } from "./backgroundSlice";
-export * from "./backgroundSlice";
+export { default as backgroundReducer } from "./background-slice";
+export * from "./background-slice";
