@@ -23,6 +23,8 @@ import ForgotPassword from "@/pages/auth/forgot-password";
 import ResetPassword from "@/pages/auth/reset-password";
 import Home from "@/pages/client/home/home-page";
 import Search from "@/pages/client/search/search-page";
+import PostPage from "@/pages/client/post/post-page";
+import TagPage from "@/pages/client/tag/tag-page";
 
 // Lazy load layouts
 const ClientLayout = React.lazy(() => import("./client-layout"));
@@ -60,6 +62,9 @@ const AppRoutes = () => {
           <Route path="explore" element={<Explore />} />
           <Route path="chat" element={<Chat />} />
           <Route path="about" element={<AboutPage />} />
+
+          <Route path="post" element={<PostPage />} />
+          <Route path="tag" element={<TagPage />} />
 
           <Route path="*" element={<NotFound />} />
         </Route>

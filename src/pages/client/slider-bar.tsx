@@ -256,7 +256,7 @@ const SliderBar: React.FC = () => {
                 key={index}
                 className="group relative rounded-xl overflow-hidden cursor-pointer"
               >
-                <div className="flex items-center p-2 rounded-xl relative">
+                <div className="flex items-center p-2 relative">
                   <div className="h-12 w-12 min-w-[48px] min-h-[48px] rounded-xl overflow-hidden relative flex-shrink-0">
                     <img
                       src={item.imgSrc}
@@ -264,16 +264,18 @@ const SliderBar: React.FC = () => {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="ms-4 z-20">
-                    <Link to={"/client/playlist"}>
-                      <span className="block font-medium text-zinc-800 dark:text-zinc-100 truncate text-ellipsis max-w-[220px]">
-                        {item.title}
+                  {!isCollapsed && (
+                    <div className="ms-4 z-20">
+                      <Link to={"/client/playlist"}>
+                        <span className="block font-medium text-zinc-800 dark:text-zinc-100 truncate text-ellipsis max-w-[220px]">
+                          {item.title}
+                        </span>
+                      </Link>
+                      <span className="block text-sm text-zinc-600 dark:text-zinc-300 truncate text-ellipsis max-w-[220px]">
+                        {item.owner}
                       </span>
-                    </Link>
-                    <span className="block text-sm text-zinc-600 dark:text-zinc-300 truncate text-ellipsis max-w-[220px]">
-                      {item.owner}
-                    </span>
-                  </div>
+                    </div>
+                  )}
                 </div>
                 <Link to={"/client/playlist"}>
                   <div className="absolute inset-0 flex items-center justify-start bg-zinc-600 bg-opacity-30 opacity-0 group-hover:opacity-100 z-10">
@@ -471,7 +473,10 @@ const SliderBar: React.FC = () => {
                       Pro
                     </Badge>
                   </div>
-                  <Link to={"/client/profile"}  className="text-zinc-500 text-sm hover:underline hover:text-zinc-800 dark:text-zinc-300 dark:hover:text-zinc-50">
+                  <Link
+                    to={"/client/profile"}
+                    className="text-zinc-500 text-sm hover:underline hover:text-zinc-800 dark:text-zinc-300 dark:hover:text-zinc-50"
+                  >
                     @nhutnguyen
                   </Link>
                 </div>

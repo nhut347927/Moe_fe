@@ -63,7 +63,7 @@ const PostItem = ({
             />
             <div
               className={cn(
-                "w-full md:w-2/5 h-[50vh] md:h-[78vh] flex flex-col transition-all duration-1000 delay-300 transform",
+                "w-full md:w-2/5 h-[50vh] md:h-[78vh] flex flex-col transition-all duration-150 delay-75 transform",
                 showDetails
                   ? "translate-x-0 opacity-100"
                   : "translate-x-20 opacity-0"

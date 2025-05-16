@@ -7,10 +7,10 @@ import { CategoryCard } from "./item/category-card";
 import { UserSuggestion } from "./item/user-suggestion";
 import { PlaylistCardFeatured } from "./item/playlist-card-featured";
 
-export default function DiscoveryPage() {
+export default function ExplorePage() {
   return (
-    <div className="h-screen max-h-screen p-4">
-      <ScrollArea className="h-full bg-white dark:bg-zinc-900 rounded-3xl p-2 pb-0">
+    <div className="h-screen max-h-screen p-2">
+      <ScrollArea className="h-full bg-white dark:bg-zinc-900 rounded-3xl p-4 px-14">
         <div className="mx-auto">
           <div className="mb-8">
             <BannerCarousel />

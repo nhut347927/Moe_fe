@@ -22,7 +22,7 @@ const PostContent = ({
   return (
     <div
       className={cn(
-        "w-full md:w-3/5 h-[50vh] md:h-[78vh] rounded-3xl overflow-hidden shadow-2xl transition-all duration-1000 transform",
+        "w-full md:w-3/5 h-[50vh] md:h-[78vh] rounded-3xl overflow-hidden transition-all duration-1000 transform",
         isVisible ? "translate-y-0 opacity-100" : "translate-y-20 opacity-0"
       )}
     >
