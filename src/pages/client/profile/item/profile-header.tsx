@@ -8,7 +8,7 @@ const IMAGE_URL = 'https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151
 export default function ProfileHeader() {
   return (
     <div className="relative h-64 w-full">
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden rounded-3xl">
         <img
           src={IMAGE_URL}
           alt="Profile cover"

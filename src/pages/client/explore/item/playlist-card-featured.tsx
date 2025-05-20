@@ -93,7 +93,7 @@ export function PlaylistCardFeatured({ playlist }: PlaylistCardProps) {
             </div>
 
             {/* Tổng lượt nghe */}
-            <Badge className={cn("rounded-2xl", playlist.color)}>
+            <Badge className={cn("rounded-md", playlist.color)}>
               <Headphones className="h-3 w-3 mr-1" />
               {playlist.plays.toLocaleString()} lượt nghe
             </Badge>
@@ -108,7 +108,7 @@ export function PlaylistCardFeatured({ playlist }: PlaylistCardProps) {
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mb-4">
               {playlist.tags.map((tag, index) => (
-                <Badge key={index} className="rounded-full">
+                <Badge key={index} className="rounded-md">
                   #{tag}
                 </Badge>
               ))}
@@ -133,11 +133,11 @@ export function PlaylistCardFeatured({ playlist }: PlaylistCardProps) {
 
           {/* Nút hành động */}
           <div className="flex flex-wrap gap-2 mt-auto">
-            <Button className="rounded-3xl gap-2">
+            <Button className="rounded-xl gap-2">
               <Play className="h-4 w-4 fill-current" />
               Phát
             </Button>
-            <Button variant="outline" className="rounded-3xl gap-2">
+            <Button variant="outline" className="rounded-xl gap-2">
               <Shuffle className="h-4 w-4" />
               Trộn bài
             </Button>

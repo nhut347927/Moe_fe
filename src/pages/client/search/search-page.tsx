@@ -21,7 +21,7 @@ export default function SearchPage() {
 
   return (
     <div className="flex h-screen max-h-screen p-2">
-      <div className="w-full bg-white dark:bg-zinc-900 rounded-3xl overflow-y-auto overflow-x-hidden scroll-but-hidden p-4 px-14">
+      <div className="w-full bg-white dark:bg-zinc-900 rounded-3xl overflow-y-auto overflow-x-hidden p-4 px-14">
         {/* Top section with slider and topics */}
         <div className="mb-12 grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Featured posts slider - takes 2/3 of the space on desktop */}

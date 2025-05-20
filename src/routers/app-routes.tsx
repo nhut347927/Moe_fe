@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import React, { Suspense } from "react";
 
-import LoadingSpinner from "../components/Common/loading-spinner-with-icon";
+import LoadingSpinner from "../components/common/loading-spinner-with-icon";
 import Like from "../pages/client/like/like-page";
 import Chat from "../pages/client/chat/chat-page";
 import Playlist from "../pages/client/playlist/playlist-page";
@@ -12,7 +12,7 @@ import Profile from "../pages/client/profile/profile-page";
 import Explore from "@/pages/client/explore/explore-page";
 import CardVariants from "@/pages/client/other/card-variants";
 import AboutPage from "@/pages/client/about/about-page";
-import NotFound from "@/components/Common/not-found";
+import NotFound from "@/components/common/not-found";
 import ManageSongs from "@/pages/admin/manage-songs";
 import ManageUsers from "@/pages/admin/manage-users";
 import Dashboard from "@/pages/admin/dashboard";

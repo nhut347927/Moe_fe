@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ModeToggle } from "@/components/Common/mode-toggle";
+import { ModeToggle } from "@/components/common/mode-toggle";
 import { Link } from "react-router-dom";
 
 export default function Header() {

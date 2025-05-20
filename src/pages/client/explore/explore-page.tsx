@@ -9,8 +9,9 @@ import { PlaylistCardFeatured } from "./item/playlist-card-featured";
 
 export default function ExplorePage() {
   return (
-    <div className="h-screen max-h-screen p-2">
-      <ScrollArea className="h-full bg-white dark:bg-zinc-900 rounded-3xl p-4 px-14">
+     <div className="flex h-screen max-h-screen p-2">
+      <div className="w-full bg-white dark:bg-zinc-900 rounded-3xl overflow-y-auto overflow-x-hidden p-4 px-14">
+  
         <div className="mx-auto">
           <div className="mb-8">
             <BannerCarousel />
@@ -194,7 +195,7 @@ export default function ExplorePage() {
             </Section>
           </div>
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 }

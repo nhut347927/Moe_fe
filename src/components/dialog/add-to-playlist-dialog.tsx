@@ -6,7 +6,7 @@ import { useState } from "react"
 import { Check, Music, Plus, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
@@ -67,7 +67,10 @@ export function AddToPlaylistDialog({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[380px] p-0 overflow-hidden"  data-scroll-ignore>
         <DialogHeader className="px-4 pt-4 pb-2">
-          <DialogTitle className="text-base font-medium">Add to playlist</DialogTitle>
+          <DialogTitle>Add to playlist</DialogTitle>
+        <DialogDescription>
+            Choise your wanted playlist to add the song to.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="px-4">
@@ -117,7 +120,7 @@ export function AddToPlaylistDialog({
           <Button variant="ghost" size="sm" onClick={() => setOpen(false)} className="text-sm h-8 px-3">
             Cancel
           </Button>
-          <Button onClick={handleDone} size="sm" className="text-sm h-8 px-3 bg-green-500 hover:bg-green-600">
+          <Button onClick={handleDone} size="sm" className="text-sm h-8 px-3 ">
             Done
           </Button>
         </DialogFooter>
