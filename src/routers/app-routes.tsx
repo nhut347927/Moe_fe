@@ -5,8 +5,8 @@ import LoadingSpinner from "../components/common/loading-spinner-with-icon";
 import Like from "../pages/client/like/like-page";
 import Chat from "../pages/client/chat/chat-page";
 import Playlist from "../pages/client/playlist/playlist-page";
-import ContentCreationHub from "../pages/client/upload/content-creation-hub";
-import PostCreator from "../pages/client/upload/post-creator";
+import ContentCreationHub from "../pages/client/upload/content-creation-hub-page";
+import PostCreator from "../pages/client/upload/post-create-page";
 import LivestreamCreator from "../pages/client/upload/livestream-creator";
 import Profile from "../pages/client/profile/profile-page";
 import Explore from "@/pages/client/explore/explore-page";
@@ -25,6 +25,7 @@ import Home from "@/pages/client/home/home-page";
 import Search from "@/pages/client/search/search-page";
 import PostPage from "@/pages/client/post/post-page";
 import TagPage from "@/pages/client/tag/tag-page";
+import UploadFilePage from "@/pages/client/upload/upload-file-page";
 
 // Lazy load layouts
 const ClientLayout = React.lazy(() => import("./client-layout"));
@@ -53,7 +54,10 @@ const AppRoutes = () => {
           <Route path="likes/video" element={<Like />} />
 
           <Route path="upload" element={<ContentCreationHub />} />
-          <Route path="upload/new-post" element={<PostCreator />} />
+
+          <Route path="upload/upload-file" element={<UploadFilePage />} />
+          <Route path="upload/post-create" element={<PostCreator />} />
+
           <Route path="upload/live" element={<LivestreamCreator />} />
 
           <Route path="profile" element={<Profile />} />

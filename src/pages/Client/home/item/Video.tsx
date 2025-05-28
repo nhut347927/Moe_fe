@@ -18,7 +18,7 @@ import React, {
       {
         videoSrc,
         initialMuted = true,
-        initialPlaying = true,
+        initialPlaying = false,
       },
       ref
     ) => {

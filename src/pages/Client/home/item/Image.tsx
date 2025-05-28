@@ -28,7 +28,7 @@ import {
         images,
         audioSrc = "",
         initialMuted = true,
-        initialPlaying = true,
+        initialPlaying = false,
       },
       ref
     ) => {
