@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import { useForm } from "react-hook-form";
-import { getAxiosInstance } from "../../services/axios/axios-instance";
+import axiosInstance from "@/services/axios/axios-instance";
 import { Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/common/hooks/use-toast";
 import {
@@ -24,7 +24,6 @@ import { Input } from "@/components/ui/input";
 
 export default function Register() {
   const { toast } = useToast();
-  const axiosInstance = getAxiosInstance();
   const navigate = useNavigate(); // Tạo instance của useNavigate
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -44,7 +43,7 @@ export default function Register() {
   async function onSubmit(values: any) {
     try {
       // Gửi yêu cầu đăng nhập
-      const response = await axiosInstance.post("/auth/register", {
+      const response = await axiosInstance.post("auth/register", {
         displayName: values.name,
         email: values.email,
         password: values.password,

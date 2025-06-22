@@ -1,82 +1,103 @@
 import { useState, useRef, useEffect } from "react";
 import { useToast } from "@/common/hooks/use-toast";
-//import { getAxiosInstance } from "../../../services/axios/axios-instance";
-import { samplePostData } from "./data";
-import { Post, Comment, PostType } from "./types";
-import PostItem from "./item/post-item";
+import { Post, Comment, TabType } from "./types";
+import PostHeader from "./item/post-header";
+import PostContent from "./item/post-content";
+import PostComments from "./item/post-comments";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Blend,
-  Earth,
+  Heart,
+  MessageCircle,
   Proportions,
   User,
-  Users,
+  Bell,
+  Search,
+  Home,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AccountProfile } from "./item/AccountProfile";
+import { Link } from "react-router-dom";
+import axiosInstance from "@/services/axios/axios-instance";
+import { cn } from "@/common/utils/utils";
 
-const Home = () => {
-  // State and Refs
-  const videoRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const currentIndex = useRef<number>(0);
-  const lastScrollTime = useRef<number>(0);
-  const contentRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const commentsRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const { toast } = useToast();
- // const axiosInstance = getAxiosInstance();
-
+// Define the Home component
+const HomePage = () => {
+  // ------------------- State Management -------------------
+  // State để lưu danh sách bài post
   const [postData, setPostData] = useState<Post[]>([]);
-  const [audioStates, setAudioStates] = useState<
-    Record<number, { isPlaying: boolean; isMuted: boolean }>
-  >({});
-  const [commentsByPost, setCommentsByPost] = useState<
-    Record<string, Comment[]>
-  >({});
-  const [isVisible, setIsVisible] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-  const [newComment, setNewComment] = useState("");
-  const [activePostId, setActivePostId] = useState<string | null>(null);
-  // Removed unused state 'showCommentInput'
-  const [showCommentsHint, setShowCommentsHint] = useState(true);
-  const [postType, setPostType] = useState<PostType>("feed");
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isSorted, setIsSorted] = useState(true);
+  // State để kiểm soát chế độ toàn màn hình
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  // State and Refs
+  const mediaRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const currentIndex = useRef<number>(0);
+  const [currentPostIndex, setCurrentPostIndex] = useState<number>(0);
+  // Hook để hiển thị thông báo
+  const { toast } = useToast();
 
-  // All available tags
-  const allTags: string[] = [
-    "Chill", "Sad", "Happy", "Love", "Rap", "Indie",
-    "EDM", "Ballad", "Pop", "Lo-fi", "Workout", "Jazz", "Acoustic",
-  ];
+  // States moved from PostComments
+  const [newComment, setNewComment] = useState<string>("");
+  const [replyTarget, setReplyTarget] = useState<{
+    commentCode: string;
+    displayName: string;
+  } | null>(null);
+  const [activePostId, setActivePostId] = useState<string>("");
+  const [visibleReplies, setVisibleReplies] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [loadingReplies, setLoadingReplies] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [replyPage, setReplyPage] = useState<{ [key: string]: number }>({});
+  const [hasMoreReplies, setHasMoreReplies] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [commentPage, setCommentPage] = useState<{ [key: string]: number }>({});
+  const [hasMoreComments, setHasMoreComments] = useState<{
+    [key: string]: boolean;
+  }>({});
 
-  // Effect for initial visibility and details
-  useEffect(() => {
-    setIsVisible(true);
-    const timer = setTimeout(() => setShowDetails(true), 600);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Effect for fetching initial data
+  // ------------------- Data Fetching Logic -------------------
+  // Effect để lấy dữ liệu ban đầu và khởi tạo states
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setPostData(samplePostData);
-        const initialComments = samplePostData.reduce((acc, post) => {
-          acc[post.postId] = post.comments;
-          return acc;
-        }, {} as Record<string, Comment[]>);
-        setCommentsByPost(initialComments);
-
-        const initialAudioStates = samplePostData.reduce((acc, _, index) => {
-          acc[index] = { isPlaying: index === 0, isMuted: index !== 0 };
-          return acc;
-        }, {} as Record<number, { isPlaying: boolean; isMuted: boolean }>);
-        setAudioStates(initialAudioStates);
+        if (postData.length === 0) {
+          const response = await fetchPost();
+          const enrichedPosts = response.map((post: Post, index: number) => ({
+            ...post,
+            comments: post.comments || [],
+            currentTab: "home",
+            isPlaying: index === 0,
+          }));
+          setPostData(enrichedPosts);
+          // Initialize commentPage and hasMoreComments for each post
+          setCommentPage(
+            enrichedPosts.reduce(
+              (acc: { [key: string]: number }, post: Post) => ({
+                ...acc,
+                [post.postCode]: 1,
+              }),
+              {}
+            )
+          );
+          setHasMoreComments(
+            enrichedPosts.reduce(
+              (acc: { [key: string]: boolean }, post: Post) => ({
+                ...acc,
+                [post.postCode]: true,
+              }),
+              {}
+            )
+          );
+        }
       } catch (error: any) {
         toast({
           variant: "destructive",
@@ -84,335 +105,836 @@ const Home = () => {
         });
       }
     };
+
     fetchData();
-  }, [toast]);
+  }, []);
 
-  // Effect for handling scroll-based comment visibility
+  // ------------------- Fullscreen Handling -------------------
   useEffect(() => {
-    const handleScrollComments = (postId: string) => {
-      const contentRef = contentRefs.current[postId];
-      const commentsRef = commentsRefs.current[postId];
-      if (!contentRef || !commentsRef) return;
-
-      const { scrollTop } = contentRef;
-      const commentsPosition = commentsRef.offsetTop;
-
-      if (scrollTop > commentsPosition - 300) {
-        setShowCommentsHint(false);
-      } else {
-        setShowCommentsHint(true);
-      }
+    const handleChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
     };
+    document.addEventListener("fullscreenchange", handleChange);
+    return () => document.removeEventListener("fullscreenchange", handleChange);
+  }, []);
 
-    Object.keys(contentRefs.current).forEach((postId) => {
-      const contentElement = contentRefs.current[postId];
-      if (contentElement) {
-        contentElement.addEventListener("scroll", () =>
-          handleScrollComments(postId)
-        );
-      }
+  // ------------------- Scroll Navigation Logic -------------------
+  const isFetching = useRef(false);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = mediaRefs.current.findIndex(
+              (ref) => ref === entry.target
+            );
+
+            if (index !== -1 && index !== currentIndex.current) {
+              currentIndex.current = index;
+              setCurrentPostIndex(index);
+
+              setPostData((prev) =>
+                prev.map((post, idx) => ({
+                  ...post,
+                  isPlaying: idx === index,
+                }))
+              );
+
+              viewPost(postData[index].postCode);
+
+              if (Number(index - 1) === 0) {
+                viewPost(postData[0].postCode);
+              }
+
+              if (!isFetching.current && index >= postData.length - 3) {
+                isFetching.current = true;
+
+                fetchPost()
+                  .then((newPosts) => {
+                    setPostData((prev) => {
+                      const existingIds = new Set(prev.map((p) => p.postId));
+                      const filteredPosts = newPosts.filter(
+                        (post: Post) => !existingIds.has(post.postId)
+                      );
+                      const enrichedPosts = filteredPosts.map((post: Post) => ({
+                        ...post,
+                        comments: post.comments || [],
+                        currentTab: "home",
+                        isPlaying: false,
+                      }));
+                      return [...prev, ...enrichedPosts];
+                    });
+                  })
+                  .catch(console.error)
+                  .finally(() => {
+                    isFetching.current = false;
+                  });
+              }
+            }
+          }
+        });
+      },
+      { root: null, threshold: 0.6 }
+    );
+
+    // 👉 Gắn observer cho tất cả phần tử có ref
+    mediaRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
     });
 
+    // 🧹 Cleanup
     return () => {
-      Object.keys(contentRefs.current).forEach((postId) => {
-        const contentElement = contentRefs.current[postId];
-        if (contentElement) {
-          contentElement.removeEventListener("scroll", () =>
-            handleScrollComments(postId)
-          );
-        }
+      mediaRefs.current.forEach((ref) => {
+        if (ref) observer.unobserve(ref);
       });
     };
   }, [postData]);
 
-  // Throttle utility for scroll handling
-  const throttle = (func: Function, wait: number) => {
-    let lastTime = 0;
-    return function (...args: any[]) {
-      const now = Date.now();
-      if (now - lastTime >= wait) {
-        lastTime = now;
-        return func(...args);
+  // ------------------- Comment Handling Logic -------------------
+  const toggleReplies = async (commentCode: string) => {
+    const isVisible = visibleReplies[commentCode];
+    setVisibleReplies((prev) => ({ ...prev, [commentCode]: !isVisible }));
+
+    if (!isVisible) {
+      const post = postData[currentPostIndex];
+      const targetIndex = post.comments?.findIndex(
+        (c) => c.commentCode === commentCode
+      );
+      if (
+        targetIndex === undefined ||
+        targetIndex === -1 ||
+        post.comments[targetIndex].replies?.length > 0
+      )
+        return;
+
+      setLoadingReplies((prev) => ({ ...prev, [commentCode]: true }));
+      try {
+        const replies = await fetchReplies(commentCode, "0");
+        setPostData((prev) => {
+          const updated = [...prev];
+          updated[currentPostIndex] = {
+            ...updated[currentPostIndex],
+            comments: updated[currentPostIndex].comments.map((c, idx) =>
+              idx === targetIndex ? { ...c, replies: replies || [] } : c
+            ),
+          };
+          return updated;
+        });
+        setReplyPage((prev) => ({ ...prev, [commentCode]: 1 }));
+        setHasMoreReplies((prev) => ({
+          ...prev,
+          [commentCode]: replies?.length > 0,
+        }));
+      } catch (err) {
+        console.error("Failed to fetch replies:", err);
+        toast({
+          variant: "destructive",
+          description: "Failed to fetch replies!",
+        });
+      } finally {
+        setLoadingReplies((prev) => ({ ...prev, [commentCode]: false }));
       }
-    };
+    }
   };
 
-  // Effect for handling scroll navigation
-  useEffect(() => {
-    const handleScroll = (event: WheelEvent) => {
-      const videoContainer = document.getElementById("video-container");
-      let el: HTMLElement | null = event.target as HTMLElement;
-      while (el && el !== videoContainer) {
-        if (el.hasAttribute("data-scroll-ignore")) return;
-        el = el.parentElement;
-      }
-
-      event.preventDefault();
-
-      const now = Date.now();
-      if (now - lastScrollTime.current < 300) return;
-
-      const delta = Math.sign(event.deltaY);
-      const newIndex = Math.min(
-        Math.max(currentIndex.current + delta, 0),
-        videoRefs.current.length - 1
+  const handleLoadMoreComments = async () => {
+    const post = postData[currentPostIndex];
+    const postCode = post.postCode;
+    try {
+      const newComments = await fetchComments(
+        postCode,
+        String(commentPage[postCode] || 1)
       );
-
-      if (newIndex !== currentIndex.current) {
-        currentIndex.current = newIndex;
-        const target = videoRefs.current[currentIndex.current];
-        if (target) {
-          window.requestAnimationFrame(() => {
-            target.scrollIntoView({ behavior: "smooth", block: "center" });
-          });
-
-          setAudioStates((prev) => {
-            const updatedStates = { ...prev };
-            Object.keys(updatedStates).forEach((key) => {
-              updatedStates[parseInt(key)] = {
-                isPlaying: parseInt(key) === newIndex,
-                isMuted: parseInt(key) !== newIndex,
-              };
-            });
-            return updatedStates;
-          });
-        }
+      setPostData((prev) => {
+        const updated = [...prev];
+        updated[currentPostIndex] = {
+          ...updated[currentPostIndex],
+          comments: [
+            ...(updated[currentPostIndex].comments || []),
+            ...newComments,
+          ],
+        };
+        return updated;
+      });
+      setCommentPage((prev) => ({
+        ...prev,
+        [postCode]: (prev[postCode] || 1) + 1,
+      }));
+      if (!newComments || newComments.length === 0) {
+        setHasMoreComments((prev) => ({ ...prev, [postCode]: false }));
       }
-
-      lastScrollTime.current = now;
-    };
-
-    const throttledHandleScroll = throttle(handleScroll, 150);
-    window.addEventListener("wheel", throttledHandleScroll, { passive: false });
-    return () => window.removeEventListener("wheel", throttledHandleScroll);
-  }, []);
-
-  // Helper functions
-  const scrollToComments = (postId: string) => {
-    const contentRef = contentRefs.current[postId];
-    const commentsRef = commentsRefs.current[postId];
-    if (contentRef && commentsRef) {
-      contentRef.scrollTo({
-        top: commentsRef.offsetTop - 100,
-        behavior: "smooth",
+    } catch (error) {
+      console.error("Failed to load more comments:", error);
+      toast({
+        variant: "destructive",
+        description: "Failed to load more comments!",
       });
     }
   };
 
-  const handleAddComment = (postId: string) => {
+  const handleLoadMoreReplies = async (commentCode: string) => {
+    if (loadingReplies[commentCode]) return;
+
+    // const post = postData[currentPostIndex];
+    const page = replyPage[commentCode] || 1;
+    setLoadingReplies((prev) => ({ ...prev, [commentCode]: true }));
+
+    try {
+      const newReplies = await fetchReplies(commentCode, String(page));
+      if (newReplies && newReplies.length > 0) {
+        setPostData((prev) => {
+          const updated = [...prev];
+          updated[currentPostIndex] = {
+            ...updated[currentPostIndex],
+            comments: updated[currentPostIndex].comments.map((comment) =>
+              comment.commentCode === commentCode
+                ? {
+                    ...comment,
+                    replies: [...(comment.replies || []), ...newReplies],
+                  }
+                : comment
+            ),
+          };
+          return updated;
+        });
+        setReplyPage((prev) => ({ ...prev, [commentCode]: page + 1 }));
+      } else {
+        setHasMoreReplies((prev) => ({ ...prev, [commentCode]: false }));
+      }
+    } catch (error) {
+      console.error("Failed to load more replies:", error);
+      toast({
+        variant: "destructive",
+        description: "Failed to load more replies!",
+      });
+    } finally {
+      setLoadingReplies((prev) => ({ ...prev, [commentCode]: false }));
+    }
+  };
+
+  const handleSendComment = async () => {
     if (!newComment.trim()) return;
 
-    const newCommentObj: Comment = {
-      commentId: `cmt-${Date.now()}`,
-      userAvatar:
-        "https://res.cloudinary.com/dwv76nhoy/image/upload/v1739337151/rrspasosi59xmsriilae.png",
-      content: newComment,
-      displayName: "Current User",
-      createdAt: new Date().toISOString(),
-      replies: [],
-    };
+    const post = postData[currentPostIndex];
+    try {
+      if (replyTarget) {
+        const res = await reply?.(replyTarget.commentCode, newComment);
+        if (res) {
+          setPostData((prev) => {
+            const updated = [...prev];
+            updated[currentPostIndex] = {
+              ...updated[currentPostIndex],
+              comments: updated[currentPostIndex].comments.map((comment) =>
+                comment.commentCode === replyTarget.commentCode
+                  ? {
+                      ...comment,
+                      replies: [res, ...(comment.replies || [])],
+                    }
+                  : comment
+              ),
+            };
+            return updated;
+          });
+          setVisibleReplies((prev) => ({
+            ...prev,
+            [replyTarget.commentCode]: true,
+          }));
+        }
+      } else {
+        const res = await comment?.(post.postCode, newComment);
+        if (res) {
+          setPostData((prev) => {
+            const updated = [...prev];
+            updated[currentPostIndex] = {
+              ...updated[currentPostIndex],
+              comments: [
+                { ...res, replies: [] },
+                ...(updated[currentPostIndex].comments || []),
+              ],
+            };
+            return updated;
+          });
+        }
+      }
 
-    setCommentsByPost((prev) => ({
-      ...prev,
-      [postId]: [...(prev[postId] || []), newCommentObj],
-    }));
-    setNewComment("");
-    toast({ description: "Comment added!" });
+      setNewComment("");
+      setReplyTarget(null);
+    } catch (error) {
+      console.error("Failed to send comment/reply:", error);
+      toast({
+        variant: "destructive",
+        description: "Failed to send comment/reply!",
+      });
+    }
   };
 
-  const addEmoji = (emoji: string) => {
-    setNewComment((prev) => prev + emoji);
+  const handleLikeOrUnlike = async (code: string) => {
+    try {
+      await likeOrUnlike?.(code);
+
+      setPostData((prev) => {
+        const updated = [...prev];
+        updated[currentPostIndex] = {
+          ...updated[currentPostIndex],
+          comments: updated[currentPostIndex].comments.map((comment) => {
+            if (comment.commentCode === code) {
+              return {
+                ...comment,
+                liked: !comment.liked,
+                likeCount: comment.liked
+                  ? (Number(comment.likeCount) - 1).toString()
+                  : (Number(comment.likeCount) + 1).toString(),
+              };
+            }
+
+            const updatedReplies = comment.replies?.map((reply) =>
+              reply.commentCode === code
+                ? {
+                    ...reply,
+                    liked: !reply.liked,
+                    likeCount: reply.liked
+                      ? (Number(reply.likeCount) - 1).toString()
+                      : (Number(reply.likeCount) + 1).toString(),
+                  }
+                : reply
+            );
+
+            return {
+              ...comment,
+              replies: updatedReplies ?? comment.replies,
+            };
+          }),
+        };
+        return updated;
+      });
+    } catch (error) {
+      console.error("Failed to like/unlike:", error);
+      toast({
+        variant: "destructive",
+        description: "Failed to like/unlike!",
+      });
+    }
   };
 
-  const toggleTag = (tag: string) => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
+  const handleDeleteComment = async (code: string) => {
+    try {
+      await deleteComment?.(code);
+      setPostData((prev) => {
+        const updated = [...prev];
+        updated[currentPostIndex] = {
+          ...updated[currentPostIndex],
+          comments: updated[currentPostIndex].comments
+            .map((comment) => {
+              // Check if the code matches a main comment
+              if (comment.commentCode === code) {
+                return null; // Mark for removal
+              }
+              // Check if the code matches a reply
+              if (
+                comment.replies?.some((reply) => reply.commentCode === code)
+              ) {
+                return {
+                  ...comment,
+                  replies: comment.replies.filter(
+                    (reply) => reply.commentCode !== code
+                  ),
+                  replyCount: (Number(comment.replyCount) - 1).toString(),
+                };
+              }
+              return comment;
+            })
+            .filter((comment): comment is Comment => comment !== null), // Remove null comments
+        };
+        return updated;
+      });
+    } catch (error) {
+      console.error("Failed to delete comment:", error);
+      toast({
+        variant: "destructive",
+        description: "Failed to delete comment!",
+      });
+    }
   };
 
-  // Tag filtering and sorting
-  const filteredTags = allTags.filter((tag) =>
-    tag.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleLikePost = async (postCode: string) => {
+    try {
+      await likePost(postCode); // Không trả về gì
 
-  const tagsToDisplay = isSorted
-    ? [
-        ...filteredTags.filter((tag) => selectedTags.includes(tag)),
-        ...filteredTags.filter((tag) => !selectedTags.includes(tag)).sort(),
-      ]
-    : filteredTags;
+      // Tự cập nhật UI dựa trên postCode
+      setPostData((prev) =>
+        prev.map((post) =>
+          post.postCode === postCode
+            ? {
+                ...post,
+                isLiked: !post.isLiked,
+                likeCount: post.isLiked
+                  ? (Number(post.likeCount) - 1).toString()
+                  : (Number(post.likeCount) + 1).toString(),
+              }
+            : post
+        )
+      );
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        description:
+          error.response?.data?.message || "Failed to like the post!",
+      });
+    }
+  };
 
-  // Render loading state
-  if (!postData.length) {
-    return (
-      <div className="text-center py-10">
-        Loading posts or no posts available...
-      </div>
-    );
-  }
+  const onchangeTab = async (tabType: TabType) => {
+    if (
+      !postData.length ||
+      currentPostIndex < 0 ||
+      currentPostIndex >= postData.length
+    ) {
+      return;
+    }
 
+    setPostData((prevPosts) => {
+      const updatedPosts = [...prevPosts];
+      const post = { ...updatedPosts[currentPostIndex] };
+
+      if (
+        tabType === "cmt" &&
+        (post.comments === null || post.comments?.length === 0)
+      ) {
+        fetchComments(post.postCode, "0")
+          .then((comments) => {
+            setPostData((prev) => {
+              const newPosts = [...prev];
+              newPosts[currentPostIndex] = {
+                ...newPosts[currentPostIndex],
+                comments,
+                currentTab: tabType,
+              };
+              return newPosts;
+            });
+            setCommentPage((prev) => ({
+              ...prev,
+              [post.postCode]: 1,
+            }));
+            setHasMoreComments((prev) => ({
+              ...prev,
+              [post.postCode]: comments?.length > 0,
+            }));
+          })
+          .catch((error) => {
+            toast({
+              variant: "destructive",
+              description: error.message || "Failed to fetch comments!",
+            });
+          });
+      } else if (tabType === "acc") {
+        fetchAccountProfile(post.userCode)
+          .then((profile) => {
+            setPostData((prev) => {
+              const newPosts = [...prev];
+              newPosts[currentPostIndex] = {
+                ...newPosts[currentPostIndex],
+                accountDetail: profile,
+                currentTab: tabType,
+              };
+              return newPosts;
+            });
+          })
+          .catch((error) => {
+            toast({
+              variant: "destructive",
+              description: error.message || "Failed to fetch profile!",
+            });
+          });
+      } else {
+        updatedPosts[currentPostIndex] = {
+          ...post,
+          currentTab: tabType,
+        };
+      }
+
+      return updatedPosts;
+    });
+  };
+
+  const handleFollowOrUnfollow = async (userCode: string) => {
+    try {
+      await followOrUnfollow(userCode);
+
+      setPostData((prev) =>
+        prev.map((post) => {
+          if (post.userCode !== userCode) return post;
+
+          if (!post.accountDetail) return post;
+
+          return {
+            ...post,
+            accountDetail: {
+              ...post.accountDetail,
+              isFollowing: !post.accountDetail.isFollowing,
+              followed: post.accountDetail.isFollowing
+                ? (Number(post.accountDetail.followed) - 1).toString()
+                : (Number(post.accountDetail.followed) + 1).toString(),
+            },
+          };
+        })
+      );
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        description:
+          error.response?.data?.message || "Failed to follow/unfollow!",
+      });
+    }
+  };
+
+  // ------------------- API Functions -------------------
+  const fetchPost = async () => {
+    const response = await axiosInstance.get("post/get-post");
+    return response.data.data;
+  };
+
+  const fetchComments = async (code: string, page: string) => {
+    const response = await axiosInstance.post("comment/get-main-comment", {
+      code: code,
+      page: page,
+      size: 5,
+    });
+    return response.data.data;
+  };
+
+  const fetchReplies = async (code: string, page: string) => {
+    const response = await axiosInstance.post("comment/get-replies", {
+      code: code,
+      page: page,
+      size: 5,
+    });
+    return response.data.data;
+  };
+
+  const comment = async (postCode: string, content: string) => {
+    const response = await axiosInstance.post("comment/comment", {
+      postCode: postCode,
+      content: content,
+    });
+    return response.data.data;
+  };
+
+  const reply = async (commentCode: string, content: string) => {
+    const response = await axiosInstance.post("comment/reply", {
+      commentCode: commentCode,
+      content: content,
+    });
+    return response.data.data;
+  };
+
+  const likeOrUnlike = async (code: string) => {
+    const response = await axiosInstance.post("comment/like", {
+      code: code,
+    });
+    return response.data.data;
+  };
+
+  const deleteComment = async (code: string) => {
+    const response = await axiosInstance.post("comment/delete", {
+      code: code,
+    });
+    return response.data.data;
+  };
+
+  const likePost = async (postCode: string) => {
+    const response = await axiosInstance.post("post/like", {
+      code: postCode,
+    });
+    return response.data.data;
+  };
+
+  const viewPost = async (postCode: string) => {
+    const response = await axiosInstance.post("post/view", {
+      code: postCode,
+    });
+    return response.data.data;
+  };
+
+  const fetchAccountProfile = async (userCode: string) => {
+    const response = await axiosInstance.post(`account/getAccountDetail`, {
+      code: userCode,
+    });
+    return response.data.data;
+  };
+
+  const followOrUnfollow = async (userCode: string) => {
+    const response = await axiosInstance.post("account/follow", {
+      code: userCode,
+    });
+    return response.data.data;
+  };
+
+  // ------------------- Render Logic -------------------
   return (
-    <div className="max-h-screen p-2 relative">
-      {/* Header with Tabs and Filters */}
-      <div className="absolute z-30 w-full">
-        <div className="flex flex-wrap gap-2 justify-center">
-          <Tabs
-            value={postType}
-            onValueChange={(value) => setPostType(value as PostType)}
-            className="w-auto"
-          >
-            <TabsList className="bg-muted/70 shadow-2xl">
-              <TabsTrigger
-                value="feed"
-                className="data-[state=active]:bg-background rounded-xl"
+    <div className="max-h-screen h-screen w-full relative">
+      <div className="absolute w-full p-2 z-10 flex justify-between">
+        <div className="flex gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex justify-center items-center p-2.5 rounded-full"
               >
-                <Earth className="h-4 w-4 mr-1" />
-                <span className="sr-only sm:not-sr-only sm:inline-block">
-                  Feed
-                </span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="personal"
-                className="data-[state=active]:bg-background rounded-xl"
+                <Blend className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="overflow-hidden bg-muted rounded-3xl mt-2"
+              align="start"
+            >
+              <ScrollArea
+                className="w-[300px] h-[300px] p-6 pt-0 space-y-3"
+                data-scroll-ignore
               >
-                <User className="h-4 w-4 mr-1" />
-                <span className="sr-only sm:not-sr-only sm:inline-block">
-                  Personal
-                </span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="friends"
-                className="data-[state=active]:bg-background rounded-xl"
-              >
-                <Users className="h-4 w-4 mr-1" />
-                <span className="sr-only sm:not-sr-only sm:inline-block">
-                  Friends
-                </span>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+                <div className="space-y-1">
+                  <h4 className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
+                    Filter by Tags
+                  </h4>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    Select one or more tags to personalize the feed.
+                  </p>
+                </div>
 
-          {/* Dynamic Post Index Display */}
-          <Button
-            variant="outline"
-            className="px-4 flex items-center gap-1 rounded-xl"
-          >
-            <Proportions className="h-4 w-4 mr-1" />
-            <span className="sr-only sm:not-sr-only sm:inline-block">
-              {currentIndex.current + 1}/{postData.length}
-            </span>
-          </Button>
+                <div className="relative p-1">
+                  <input
+                    type="text"
+                    placeholder="Search tags..."
+                    className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:bg-zinc-800 dark:text-zinc-200"
+                  />
+                </div>
 
-          {/* Tag Filter Dropdown */}
-          {postType === "personal" && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="px-4 flex items-center gap-1 rounded-xl"
-                >
-                  <Blend className="h-4 w-4 mr-1" />
-                  <span className="sr-only sm:not-sr-only sm:inline-block">
-                    Filter tags
+                <div className="flex items-center mb-2">
+                  <span className="text-sm text-zinc-600 dark:text-zinc-300 mr-2">
+                    Sort Tags
                   </span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="overflow-hidden bg-muted rounded-3xl mt-2"
-                align="start"
+                  <button className="flex items-center gap-2 px-3 py-1 text-sm font-medium text-zinc-700 dark:text-zinc-200 rounded-full border border-zinc-300 dark:border-zinc-600 transition-all duration-200 hover:bg-zinc-200 dark:hover:bg-zinc-700">
+                    <span className="text-base">↕</span>
+                    {true ? "Unsort" : "Sort"}
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap gap-2 mb-9">#fdfdfdfdf</div>
+              </ScrollArea>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Link to="/client/search">
+            <Button
+              variant="outline"
+              className="flex justify-center items-center p-2.5 rounded-full"
+            >
+              <Search className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+        <div className="flex gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex justify-center items-center p-2.5 rounded-full"
               >
-                <ScrollArea
-                  className="w-[300px] h-[300px] p-6 pt-0 space-y-3"
-                  data-scroll-ignore
-                >
-                  <div className="space-y-1">
-                    <h4 className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-                      Filter by Tags
-                    </h4>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                      Select one or more tags to personalize the feed.
-                    </p>
-                  </div>
-
-                  <div className="relative p-1">
-                    <input
-                      type="text"
-                      placeholder="Search tags..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:bg-zinc-800 dark:text-zinc-200"
-                    />
-                  </div>
-
-                  <div className="flex items-center mb-2">
-                    <span className="text-sm text-zinc-600 dark:text-zinc-300 mr-2">
-                      Sort Tags
-                    </span>
-                    <button
-                      onClick={() => setIsSorted(!isSorted)}
-                      className="flex items-center gap-2 px-3 py-1 text-sm font-medium text-zinc-700 dark:text-zinc-200 rounded-full border border-zinc-300 dark:border-zinc-600 transition-all duration-200 hover:bg-zinc-200 dark:hover:bg-zinc-700"
-                    >
-                      <span className="text-base">↕</span>
-                      {isSorted ? "Unsort" : "Sort"}
-                    </button>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2 mb-9">
-                    {tagsToDisplay.map((tag) => {
-                      const isSelected = selectedTags.includes(tag);
-                      return (
-                        <button
-                          key={tag}
-                          onClick={() => toggleTag(tag)}
-                          className={`px-3 py-1 rounded-full text-sm transition-all duration-200 border whitespace-nowrap
-                            ${
-                              isSelected
-                                ? "bg-black text-white border-zinc-900 dark:bg-white dark:text-black dark:border-zinc-600"
-                                : "bg-zinc-200 text-zinc-700 hover:bg-zinc-300 border-zinc-300 dark:bg-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-600 dark:border-zinc-600"
-                            }`}
-                        >
-                          #{tag}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </ScrollArea>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+                <Bell className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <div>...</div>
+              <div className="divide-y divide-zinc-200 dark:divide-zinc-700">
+                eddsdsdsds
+              </div>
+              <div className="pt-2 border-t ...">
+                <div className="text-center">
+                  <button className="text-blue-600 ...">
+                    Xem tất cả thông báo
+                  </button>
+                </div>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Link to={"/client/profile"}>
+            <Avatar className="w-9 h-9">
+              <AvatarImage
+                src={`https://res.cloudinary.com/dwv76nhoy/image/upload/w_80,h_80,c_thumb,f_auto,q_auto/${"abc"}`}
+              />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </Link>
         </div>
       </div>
 
-      {/* Post List */}
       <div
         id="video-container"
-        className="h-full rounded-3xl overflow-y-auto overflow-x-hidden scroll-but-hidden"
+        className="overflow-y-auto scroll-but-hidden snap-y snap-mandatory h-full"
       >
         {postData.map((post, index) => (
-          <PostItem
-            key={post.postId}
-            post={post}
-            index={index}
-            videoRefs={videoRefs}
-            audioStates={audioStates}
-            isVisible={isVisible}
-            showDetails={showDetails}
-            commentsByPost={commentsByPost}
-            contentRefs={contentRefs}
-            commentsRefs={commentsRefs}
-            showCommentsHint={showCommentsHint}
-            scrollToComments={scrollToComments}
-            newComment={newComment}
-            activePostId={activePostId}
-            setActivePostId={setActivePostId}
-            setNewComment={setNewComment}
-            handleAddComment={handleAddComment}
-            addEmoji={addEmoji}
-          />
+          <div
+            key={index}
+            ref={(el) => (mediaRefs.current[index] = el)}
+            className="h-screen snap-center flex flex-col"
+          >
+            <div className="flex-1 flex justify-center items-center overflow-hidden">
+              {(() => {
+                switch (post.currentTab || "home") {
+                  case "home":
+                    return (
+                      <PostContent
+                        post={post}
+                        index={index}
+                        mediaRefs={mediaRefs}
+                        isPlaying={post.isPlaying}
+                        handleLikePost={handleLikePost}
+                      />
+                    );
+                  case "cmt":
+                    return (
+                      <ScrollArea
+                        className="flex-1 max-h-full h-full max-w-[500px] mt-20 p-2 overflow-y-auto overflow-x-hidden"
+                        data-scroll-ignore
+                      >
+                        <PostHeader post={post} onchangeTab={onchangeTab} />
+                        <PostComments
+                          post={post}
+                          newComment={newComment}
+                          setNewComment={setNewComment}
+                          replyTarget={replyTarget}
+                          setReplyTarget={setReplyTarget}
+                          activePostId={activePostId}
+                          setActivePostId={setActivePostId}
+                          visibleReplies={visibleReplies}
+                          loadingReplies={loadingReplies}
+                          hasMoreReplies={hasMoreReplies}
+                          hasMoreComments={
+                            hasMoreComments[post.postCode] || false
+                          }
+                          toggleReplies={toggleReplies}
+                          handleLoadMoreComments={handleLoadMoreComments}
+                          handleLoadMoreReplies={handleLoadMoreReplies}
+                          handleSendComment={handleSendComment}
+                          handleLikeOrUnlike={handleLikeOrUnlike}
+                          handleDeleteComment={handleDeleteComment}
+                          isFullscreen={isFullscreen}
+                        />
+                      </ScrollArea>
+                    );
+                  case "acc":
+                    return (
+                      <AccountProfile
+                        accountDetail={post.accountDetail}
+                        handleFollowOrUnfollow={handleFollowOrUnfollow}
+                      />
+                    );
+                  default:
+                    return <div>Không có tab phù hợp</div>;
+                }
+              })()}
+            </div>
+
+            <div
+              className={`flex justify-center mt-1 
+                          ${
+                            isFullscreen
+                              ? "pb-4"
+                              : "pb-[50px] sm:pb-[env(safe-area-inset-bottom)]"
+                          }`}
+            >
+              <div className="w-full sm:w-auto flex gap-2 items-center pb-2 mx-2">
+                <Tabs
+                  value={post.currentTab || "home"}
+                  onValueChange={(value) => {
+                    onchangeTab(value as TabType);
+                  }}
+                  className="w-full"
+                >
+                  <TabsList
+                    className="
+        w-full sm:w-[400px]
+        mx-auto
+        bg-zinc-200 dark:bg-zinc-800
+        flex justify-between
+        rounded-3xl
+        h-[45px]
+      "
+                  >
+                    <TabsTrigger
+                      value="home"
+                      className="
+          data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700
+          h-[38px] data-[state=active]:px-6
+          rounded-3xl
+          text-zinc-800 dark:text-zinc-200
+          w-full flex justify-center
+        "
+                    >
+                      <Home className="h-5 w-5 mr-1" />
+                      {post.currentTab === "home" ? (
+                        <span className="w-f flex justify-center text-xs">
+                          Home
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </TabsTrigger>
+
+                    <TabsTrigger
+                      value="cmt"
+                      className="
+          data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700
+          h-[38px] data-[state=active]:px-6
+          rounded-3xl
+          text-zinc-800 dark:text-zinc-200
+         
+        "
+                    >
+                      <MessageCircle className="h-5 w-5 mr-1" />
+                      {post.currentTab === "cmt" ? (
+                        <span className="w-full flex justify-center text-xs">
+                          Comment
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </TabsTrigger>
+
+                    <TabsTrigger
+                      value="acc"
+                      className="
+          data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700
+          h-[38px] data-[state=active]:px-6
+          rounded-3xl
+          text-zinc-800 dark:text-zinc-200
+          w-full flex justify-center
+          
+        "
+                    >
+                      <User className="h-5 w-5 mr-1" />
+                      {post.currentTab === "acc" ? (
+                        <span className="w-full flex justify-center text-xs">
+                          Account
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+
+                <div className="px-4 h-[45px] bg-zinc-200 dark:bg-zinc-800 flex items-center rounded-3xl">
+                  <Proportions className="h-4 w-4 mr-1 text-zinc-500 dark:text-zinc-400" />
+                  <span className="inline-block text-zinc-600 dark:text-zinc-300 text-sm">
+                    {index + 1}/{postData.length}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     </div>
   );
 };
 
-export default Home;
+export default HomePage;

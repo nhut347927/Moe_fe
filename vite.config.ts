@@ -1,5 +1,5 @@
 import path from "path";
-import react from '@vitejs/plugin-react-swc'; // Đảm bảo cài đúng plugin này
+import react from "@vitejs/plugin-react-swc"; // Đảm bảo cài đúng plugin này
 import { defineConfig } from "vite";
 
 export default defineConfig({
@@ -10,7 +10,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000
+    port: 3000,
+    host: true, // hoặc '0.0.0.0'
   },
-  
 });

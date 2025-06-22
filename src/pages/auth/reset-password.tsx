@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useForm } from "react-hook-form";
-import { getAxiosInstance } from "../../services/axios/axios-instance";
 import { Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/common/hooks/use-toast";
 import {
@@ -21,10 +20,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-
+import axiosInstance from "@/services/axios/axios-instance";
 export default function ResetPassword() {
   const { toast } = useToast();
-  const axiosInstance = getAxiosInstance();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -49,7 +47,7 @@ export default function ResetPassword() {
   async function onSubmit(values: any) {
     try {
       // Gửi yêu cầu đăng nhập
-      const response = await axiosInstance.post("/auth/reset-password", {
+      const response = await axiosInstance.post("auth/reset-password", {
         token: tokenReset,
         newPassword: values.newPassword,
         confirmNewPassword: values.confirmNewPassword,

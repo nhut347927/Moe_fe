@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useForm } from "react-hook-form";
-import { getAxiosInstance } from "../../services/axios/axios-instance";
+import axiosInstance from "@/services/axios/axios-instance";
 import { Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/common/hooks/use-toast";
 import {
@@ -24,7 +24,6 @@ import { Input } from "@/components/ui/input";
 
 export default function ChangePassword() {
   const { toast } = useToast();
-  const axiosInstance = getAxiosInstance();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -43,7 +42,7 @@ export default function ChangePassword() {
     try {
 
       const response = await axiosInstance.put(
-        "/auth/change-password",
+        "auth/change-password",
         {
           newPassword: values.newPassword,
           confirmNewPassword: values.confirmNewPassword,

@@ -1,8 +1,6 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
+import { useState, type ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -20,12 +18,12 @@ interface DeleteConfirmationDialogProps {
   description?: string
   itemName?: string
   onConfirm: () => Promise<void> | void
-  trigger?: React.ReactNode
+  trigger?: ReactNode
 }
 
 export default function DeleteConfirmationDialog({
-  title = "Xác nhận xóa",
-  description = "Bạn có chắc chắn muốn xóa mục này không? Hành động này không thể hoàn tác.",
+  title = "Confirm Deletion",
+  description = "Are you sure you want to delete this item? This action cannot be undone.",
   itemName,
   onConfirm,
   trigger,
@@ -39,7 +37,7 @@ export default function DeleteConfirmationDialog({
       await onConfirm()
       setOpen(false)
     } catch (error) {
-      console.error("Lỗi khi xóa:", error)
+      console.error("Error while deleting:", error)
     } finally {
       setIsDeleting(false)
     }
@@ -49,31 +47,46 @@ export default function DeleteConfirmationDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant="destructive" size="sm">
-            <Trash2 className="h-4 w-4 mr-2" />
-            Xóa
+          <Button
+            variant="destructive"
+            size="sm"
+            className="flex items-center gap-2 rounded-lg px-3 py-1.5"
+          >
+            <Trash2 className="w-4 h-4" />
+            Delete
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md rounded-3xl bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 shadow-xl border border-zinc-200 dark:border-zinc-700">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg font-semibold tracking-tight">
+            {title}
+          </DialogTitle>
+          <DialogDescription className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
             {itemName
-              ? `Bạn có chắc chắn muốn xóa "${itemName}" không? Hành động này không thể hoàn tác.`
+              ? `Are you sure you want to delete “${itemName}”? This action cannot be undone.`
               : description}
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={isDeleting}>
-            Hủy
+        <DialogFooter className="mt-4 flex justify-end gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            disabled={isDeleting}
+            className="rounded-lg px-4 py-2"
+          >
+            Cancel
           </Button>
-          <Button variant="destructive" onClick={handleConfirm} disabled={isDeleting}>
-            {isDeleting ? "Đang xóa..." : "Xác nhận xóa"}
+          <Button
+            variant="destructive"
+            onClick={handleConfirm}
+            disabled={isDeleting}
+            className="rounded-lg px-4 py-2"
+          >
+            {isDeleting ? "Deleting..." : "Confirm"}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   )
 }
-

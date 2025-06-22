@@ -1,7 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Link } from "react-router-dom";
 import { getTimeAgo } from "@/common/utils/utils";
-import { Post } from "../types";
+import { Post, TabType } from "../types";
 import { useState } from "react";
 import ActionMenuDialog from "@/components/dialog/action-menu-dialog";
 import { Button } from "@/components/ui/button";
@@ -11,9 +10,10 @@ import DeleteConfirmationDialog from "@/components/dialog/delete-confirmation-di
 
 interface PostHeaderProps {
   post: Post;
+  onchangeTab?: (tab: TabType) => void;
 }
 
-const PostHeader = ({ post }: PostHeaderProps) => {
+const PostHeader = ({ post, onchangeTab }: PostHeaderProps) => {
   const [expanded, setExpanded] = useState(false);
   function handleDelete(): void | Promise<void> {
     throw new Error("Function not implemented.");
@@ -22,8 +22,10 @@ const PostHeader = ({ post }: PostHeaderProps) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <Avatar>
-          <AvatarImage src={post.userAvatar} />
+        <Avatar className="w-9 h-9">
+          <AvatarImage
+            src={`https://res.cloudinary.com/dwv76nhoy/image/upload/w_80,h_80,c_thumb,f_auto,q_auto/${post.userAvatar}`}
+          />
           <AvatarFallback>{post.userDisplayName.charAt(0)}</AvatarFallback>
         </Avatar>
         <div>
@@ -32,28 +34,32 @@ const PostHeader = ({ post }: PostHeaderProps) => {
               {post.userDisplayName}
             </span>
             <span className="text-zinc-400 text-sm">•</span>
-            <Link
-              to={"/client/profile"}
+            <span
+              onClick={() => onchangeTab?.("acc")}
               className="text-zinc-500 text-sm hover:underline hover:text-zinc-800 dark:text-zinc-300 dark:hover:text-zinc-50"
             >
               @{post.userName}
-            </Link>
+            </span>
           </h3>
           <p className="text-xs text-muted-foreground">
             {getTimeAgo(post.createdAt)}
           </p>
         </div>
         <div className="hidden md:flex items-center gap-2">
-          <Link to="/client/profile">
-            <Button variant="outline" className="text-xs px-3 h-7">
-              Theo dõi
-            </Button>
-          </Link>
-          <Link to="/client/profile">
-            <Button variant="default" className="text-xs px-3 h-7">
-              Nhắn tin
-            </Button>
-          </Link>
+          <Button
+            onClick={() => onchangeTab?.("acc")}
+            variant="outline"
+            className="text-xs px-3 h-7"
+          >
+            Theo dõi
+          </Button>
+          <Button
+            onClick={() => onchangeTab?.("acc")}
+            variant="default"
+            className="text-xs px-3 h-7"
+          >
+            Nhắn tin
+          </Button>
         </div>
         <ActionMenuDialog
           trigger={
@@ -94,7 +100,7 @@ const PostHeader = ({ post }: PostHeaderProps) => {
       <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
         {post.title}
       </h2>
-      <div className="min-h-[270px] mt-4">
+      <div className="mt-4">
         <p
           className={`text-muted-foreground text-base md:text-lg leading-relaxed transition-all duration-300 ${
             !expanded
@@ -123,10 +129,16 @@ const PostHeader = ({ post }: PostHeaderProps) => {
       </div>
 
       <div className="flex flex-wrap gap-2 mt-4">
-        {post.tags.map((tag, index) => (
+        {post?.tags?.map((tag, index) => (
           <span
             key={index}
-            className="bg-zinc-50/70 dark:bg-zinc-950/70 text-zinc-800 dark:text-zinc-50 text-sm px-2 py-1 rounded-md"
+            className="
+        bg-zinc-100/60 dark:bg-zinc-900/70
+        text-zinc-700 dark:text-zinc-200
+        px-3 py-1 text-sm rounded-full
+        shadow-sm ring-1 ring-zinc-300 dark:ring-zinc-700
+        backdrop-blur-md
+      "
           >
             #{tag}
           </span>

@@ -5,7 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Music, Search, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getAxiosInstance } from "../../../services/axios/axios-instance";
+import axiosInstance from "@/services/axios/axios-instance";
 
 interface Sound {
   postId: number;
@@ -24,7 +24,6 @@ export function SoundSelector({ setPostId }: SoundSelectorProps) {
   const [sounds, setSounds] = useState<Sound[]>([]);
   const [selectedSound, setSelectedSound] = useState<Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const axiosInstance = getAxiosInstance();
   // Fetch sounds with debounce (600ms)
   useEffect(() => {
     const delayDebounce = setTimeout(async () => {

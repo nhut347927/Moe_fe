@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { getAxiosInstance } from "../../services/axios/axios-instance";
+import axiosInstance from "@/services/axios/axios-instance";
 import { Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/common/hooks/use-toast";
 import {
@@ -21,15 +21,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import {
+  GoogleOAuthProvider,
+  GoogleLogin,
+  CredentialResponse,
+} from "@react-oauth/google";
 import { ENV } from "@/common/config/env";
-
+import Cookies from 'js-cookie';
 
 const clientId = ENV.GOOGLE_CLIENT_ID;
 
 export default function Login() {
   const { toast } = useToast();
-  const axiosInstance = getAxiosInstance();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessages, setErrorMessages] = useState<any>({});
@@ -46,11 +49,14 @@ export default function Login() {
   // Xử lý đăng nhập bằng email & password
   async function onSubmit(values: any) {
     try {
-      const response = await axiosInstance.post("/auth/login", {
+      const response = await axiosInstance.post("auth/login", {
         email: values.email,
         password: values.password,
       });
-
+      Cookies.set("accessToken_fe", response.data.data.accessToken, { expires: 1 });
+      Cookies.set("refreshToken_fe", response.data.data.refreshToken, {
+        expires: 180,
+      });
       toast({
         variant: "default",
         description: <p className="text-lime-500">{response.data.message}</p>,

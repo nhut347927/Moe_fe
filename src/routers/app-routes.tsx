@@ -8,7 +8,6 @@ import Playlist from "../pages/client/playlist/playlist-page";
 import ContentCreationHub from "../pages/client/upload/content-creation-hub-page";
 import PostCreator from "../pages/client/upload/post-create-page";
 import LivestreamCreator from "../pages/client/upload/livestream-creator";
-import Profile from "../pages/client/profile/profile-page";
 import Explore from "@/pages/client/explore/explore-page";
 import CardVariants from "@/pages/client/other/card-variants";
 import AboutPage from "@/pages/client/about/about-page";
@@ -22,11 +21,10 @@ import ChangePassword from "@/pages/auth/change-password";
 import ForgotPassword from "@/pages/auth/forgot-password";
 import ResetPassword from "@/pages/auth/reset-password";
 import Home from "@/pages/client/home/home-page";
-import Search from "@/pages/client/search/search-page";
+import { SearchPage } from "@/pages/client/search/search-page";
 import PostPage from "@/pages/client/post/post-page";
-import TagPage from "@/pages/client/tag/tag-page";
 import UploadFilePage from "@/pages/client/upload/upload-file-page";
-
+import { ProfilePage } from "@/pages/client/profile/profile-page";
 // Lazy load layouts
 const ClientLayout = React.lazy(() => import("./client-layout"));
 const AuthLayout = React.lazy(() => import("./auth-layout"));
@@ -43,11 +41,8 @@ const AppRoutes = () => {
           <Route path="playlist" element={<Playlist />} />
           <Route path="card" element={<CardVariants />} />
 
-          <Route path="search" element={<Search />} />
-          <Route path="search/post" element={<Search />} />
-          <Route path="search/video" element={<Search />} />
-          <Route path="search/users" element={<Search />} />
-          <Route path="search/playlists" element={<Search />} />
+          <Route path="search" element={<SearchPage />} />
+          <Route path="profile" element={<ProfilePage />} />
 
           <Route path="likes" element={<Like />} />
           <Route path="likes/post" element={<Like />} />
@@ -60,15 +55,11 @@ const AppRoutes = () => {
 
           <Route path="upload/live" element={<LivestreamCreator />} />
 
-          <Route path="profile" element={<Profile />} />
-          <Route path="profile/post" element={<Profile />} />
-          <Route path="profile/playlist" element={<Profile />} />
           <Route path="explore" element={<Explore />} />
           <Route path="chat" element={<Chat />} />
           <Route path="about" element={<AboutPage />} />
 
           <Route path="post" element={<PostPage />} />
-          <Route path="tag" element={<TagPage />} />
 
           <Route path="*" element={<NotFound />} />
         </Route>
